@@ -143,7 +143,7 @@ dlna:
 
 ECOSYSTEM:
 ifeq ($(CONFIG_WGET),y)
-	mkdir -p $(OPENSSL_DIR)/lib && rm -rf $(OPENSSL_DIR)/lib/libssl.so.1.0.0 && cp $(TOOLCHAIN)/usr/lib/libssl.so.1.0.0 $(OPENSSL_DIR)/lib/
+	mkdir -p $(OPENSSL_DIR)/lib && rm -rf $(OPENSSL_DIR)/lib/libssl.so.1.0.0 && cp $(OPENSSL_DIR)/../../../src/router/prebuilt/target/lib/libssl.so.1.0.0 $(OPENSSL_DIR)/lib/
 	cd $(WGET_DIR) && $(CONFIGURE) CFLAGS="$(CFLAGS) -DMB_CUR_MAX=1" LDFLAGS="$(LDFLAGS) -L$(OPENSSL_DIR)" \
 		--with-ssl=openssl --with-libssl-prefix=$(OPENSSL_DIR) --prefix=$(TARGETDIR)
 endif
