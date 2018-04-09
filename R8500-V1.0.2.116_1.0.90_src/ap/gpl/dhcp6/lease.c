@@ -72,7 +72,7 @@ write_lease(const struct dhcp6_lease *lease_ptr,
 	
 	if ((inet_ntop(AF_INET6, &lease_ptr->lease_addr.addr, 
 		addr_str, sizeof(addr_str))) == 0) {
-		dprintf(LOG_DEBUG, "%s" "inet_ntop %s", FNAME, strerror(errno));
+		debug_printf(LOG_DEBUG, "%s" "inet_ntop %s", FNAME, strerror(errno));
 		return (-1);
 	}
 	gmtime_r(&lease_ptr->start_date, &brokendown_time);
@@ -91,7 +91,7 @@ write_lease(const struct dhcp6_lease *lease_ptr,
 	if (!IN6_IS_ADDR_UNSPECIFIED(&lease_ptr->linklocal)) {
 		if ((inet_ntop(AF_INET6, &lease_ptr->linklocal, addr_str, 
 			sizeof(struct in6_addr))) == 0) {
-			dprintf(LOG_DEBUG, "%s" "inet_ntop %s", FNAME, strerror(errno));
+			debug_printf(LOG_DEBUG, "%s" "inet_ntop %s", FNAME, strerror(errno));
 			return (-1);
 		}
 		fprintf(file, "\t linklocal: %s;\n", addr_str);
@@ -114,12 +114,12 @@ write_lease(const struct dhcp6_lease *lease_ptr,
                              lease_ptr->lease_addr.validlifetime);
 	fprintf(file, "}\n");
 	if (fflush(file) == EOF) {
-		dprintf(LOG_INFO, "%s" "write lease fflush failed %s", 
+		debug_printf(LOG_INFO, "%s" "write lease fflush failed %s", 
 			FNAME, strerror(errno));
 		return -1;
 	}
 	if (fsync(fileno(file)) < 0) {
-		dprintf(LOG_INFO, "%s" "write lease fsync failed %s", 
+		debug_printf(LOG_INFO, "%s" "write lease fsync failed %s", 
 			FNAME, strerror(errno));
 		return -1;
 	}
@@ -133,7 +133,7 @@ sync_leases (FILE *file, const char *original, char *template)
 	struct hashlist_element *element;
 	fd = mkstemp(template);
         if (fd < 0 || (sync_file = fdopen(fd, "w")) == NULL) {
-		dprintf(LOG_ERR, "%s" "could not open sync file", FNAME);
+		debug_printf(LOG_ERR, "%s" "could not open sync file", FNAME);
                 return (NULL);
         }
 	if (dhcp6_mode == DHCP6_MODE_SERVER) {
@@ -142,7 +142,7 @@ sync_leases (FILE *file, const char *original, char *template)
 			while (element) {
 				if (write_lease((struct dhcp6_lease *)element->data, 
 							sync_file) < 0) {
-					dprintf(LOG_ERR, "%s" "write lease failed", FNAME);
+					debug_printf(LOG_ERR, "%s" "write lease failed", FNAME);
 					return (NULL);
 				}
 				element = element->next;
@@ -153,17 +153,17 @@ sync_leases (FILE *file, const char *original, char *template)
 		for (lv = TAILQ_FIRST(&client6_iaidaddr.lease_list); lv; lv = lv_next) {
 			lv_next = TAILQ_NEXT(lv, link);
 			if (write_lease(lv, sync_file) < 0)  
-				dprintf(LOG_ERR, "%s" "write lease failed", FNAME);
+				debug_printf(LOG_ERR, "%s" "write lease failed", FNAME);
 		}
 	}
 	fclose(sync_file);
 	fclose(file);
 	if (rename(template, original) < 0) { 
-		dprintf(LOG_ERR, "%s" "Could not rename sync file", FNAME);
+		debug_printf(LOG_ERR, "%s" "Could not rename sync file", FNAME);
 		return (NULL);
 	}
         if ((file = fopen(original, "a+")) == NULL) {
-                dprintf(LOG_ERR, "%s" "could not open sync file", FNAME);
+                debug_printf(LOG_ERR, "%s" "could not open sync file", FNAME);
 		return (NULL);
 	}
 	return file; 
@@ -181,12 +181,12 @@ init_leases(const char *name)
 	FILE *file;
 	file = fopen(name, "a+");
 	if(!file) {
-		dprintf(LOG_ERR, "%s" "could not open lease file", FNAME);
+		debug_printf(LOG_ERR, "%s" "could not open lease file", FNAME);
 		return (NULL);
 	}
 	if (dhcp6_mode == DHCP6_MODE_SERVER) {
 		if (0 != init_lease_hashes()) {
-			dprintf(LOG_ERR, "%s" "Could not initialize hash arrays", FNAME);
+			debug_printf(LOG_ERR, "%s" "Could not initialize hash arrays", FNAME);
 			return (NULL);
 		}
 	}
@@ -200,25 +200,25 @@ init_lease_hashes(void)
 
 	hash_anchors = (struct hash_table **)malloc(HASH_TABLE_COUNT*sizeof(*hash_anchors));
 	if (!hash_anchors) {
-		dprintf(LOG_ERR, "%s" "Couldn't malloc hash anchors", FNAME);
+		debug_printf(LOG_ERR, "%s" "Couldn't malloc hash anchors", FNAME);
 		return (-1);
 	}
         host_addr_hash_table = hash_table_create(DEFAULT_HASH_SIZE, 
 			addr_hash, v6addr_findkey, v6addr_key_compare);
 	if (!host_addr_hash_table) {
-		dprintf(LOG_ERR, "%s" "Couldn't create hash table", FNAME);
+		debug_printf(LOG_ERR, "%s" "Couldn't create hash table", FNAME);
 		return (-1);
 	}
         lease_hash_table = hash_table_create(DEFAULT_HASH_SIZE, 
 			addr_hash, lease_findkey, lease_key_compare);
 	if (!lease_hash_table) {
-		dprintf(LOG_ERR, "%s" "Couldn't create hash table", FNAME);
+		debug_printf(LOG_ERR, "%s" "Couldn't create hash table", FNAME);
 		return (-1);
 	}
         server6_hash_table = hash_table_create(DEFAULT_HASH_SIZE, 
 			iaid_hash, iaid_findkey, iaid_key_compare);
 	if (!server6_hash_table) {
-		dprintf(LOG_ERR, "%s" "Couldn't create hash table", FNAME);
+		debug_printf(LOG_ERR, "%s" "Couldn't create hash table", FNAME);
 		return (-1);
 	}
 	return 0;
@@ -355,7 +355,7 @@ get_linklocal(const char *ifname,
 	struct ifaddrs *ifa, *ifap;
 	struct sockaddr *sd;
 	if (getifaddrs(&ifap) < 0) {
-		dprintf(LOG_ERR, "getifaddrs error");
+		debug_printf(LOG_ERR, "getifaddrs error");
 		return -1;
 	}
 	/* ifa->ifa_addr is sockaddr_in6 */

@@ -116,11 +116,11 @@ get_if_prefix(struct nlmsghdr *nlm, int nlm_len, int request,
 			}
 		}
 		inet_ntop(AF_INET6, &(rainfo->prefix), addr, INET6_ADDRSTRLEN);
-		dprintf(LOG_DEBUG, "get prefix address %s", addr);
-		dprintf(LOG_DEBUG, "get prefix plen %d",rtm->rtm_dst_len);
+		debug_printf(LOG_DEBUG, "get prefix address %s", addr);
+		debug_printf(LOG_DEBUG, "get prefix plen %d",rtm->rtm_dst_len);
 		break;
 	case RTA_CACHEINFO:
-		dprintf(LOG_DEBUG, "prefix route life time is %d\n",
+		debug_printf(LOG_DEBUG, "prefix route life time is %d\n",
 		      ((struct rta_cacheinfo *)rtadata)->rta_expires);
 		break;
 	default:
@@ -138,7 +138,7 @@ get_if_flags(struct nlmsghdr *nlm, int nlm_len, int request,
 	size_t rtasize, rtasize1, rtapayload;
 	void *rtadata;
 
-	dprintf(LOG_DEBUG, "get_if_flags called");
+	debug_printf(LOG_DEBUG, "get_if_flags called");
 
 	if (ifim->ifi_family != AF_INET6 || nlm->nlmsg_type != request)
 		return;
@@ -168,10 +168,10 @@ get_if_flags(struct nlmsghdr *nlm, int nlm_len, int request,
 				/* flags for IF_RA_MANAGED/IF_RA_OTHERCONF */
 				ifp->ra_flag = *((u_int32_t *)rtadata1);
 				if (*((u_int32_t *)rtadata1) & IF_RA_MANAGED)
-					dprintf(LOG_DEBUG, 
+					debug_printf(LOG_DEBUG, 
 						"interface managed flags set");
 				if (*((u_int32_t *)rtadata1) & IF_RA_OTHERCONF)
-					dprintf(LOG_DEBUG,
+					debug_printf(LOG_DEBUG,
 						"interface otherconf flags set");
 				break;
 			default:
@@ -193,14 +193,14 @@ open_netlink_socket()
 	struct sockaddr_nl nl_addr;
 	int sd;
 
-	dprintf(LOG_DEBUG, "open_netlink_socket called");
+	debug_printf(LOG_DEBUG, "open_netlink_socket called");
 	sd = socket(PF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
 	if (sd < 0)
 		return -1;
 	memset(&nl_addr, 0, sizeof(nl_addr));
 	nl_addr.nl_family = AF_NETLINK;
 	if (bind(sd, (struct sockaddr *)&nl_addr, sizeof(nl_addr)) < 0) {
-		dprintf(LOG_ERR, "netlink bind error");
+		debug_printf(LOG_ERR, "netlink bind error");
 		close(sd);
 		return -1;
 	}
@@ -218,7 +218,7 @@ netlink_send_rtmsg(int sd, int request, int flags, int seq)
 	int status;
 	
 	memset(&buf, 0, sizeof(buf));
-	dprintf(LOG_DEBUG, "netlink_send_rtmsg called");
+	debug_printf(LOG_DEBUG, "netlink_send_rtmsg called");
 
 	nlm_hdr = (struct nlmsghdr *)buf;
 	nlm_hdr->nlmsg_len = NLMSG_LENGTH (sizeof (*rt_msg));
@@ -251,7 +251,7 @@ netlink_send_rtgenmsg(int sd, int request, int flags, int seq)
 	int status;
 
 	memset(&buf, 0, sizeof(buf));
-	dprintf(LOG_DEBUG, "netlink_send_rtgenmsg called");
+	debug_printf(LOG_DEBUG, "netlink_send_rtgenmsg called");
 
 	nlm_hdr = (struct nlmsghdr *)buf;
 	nlm_hdr->nlmsg_len = NLMSG_LENGTH (sizeof (*rt_genmsg));
@@ -280,7 +280,7 @@ netlink_recv_rtgenmsg(int sd, int request, int seq, struct dhcp6_if *ifp)
 	size_t newsize = 65536, size = 0;
 	int msg_len;
 
-	dprintf(LOG_DEBUG, "netlink_recv_rtgenmsg called");
+	debug_printf(LOG_DEBUG, "netlink_recv_rtgenmsg called");
 
 	if (seq == 0)
 		seq = (int)time(NULL);
@@ -313,7 +313,7 @@ netlink_recv_rtgenmsg(int sd, int request, int seq, struct dhcp6_if *ifp)
 		     nlm = (struct nlmsghdr *)NLMSG_NEXT(nlm, msg_len)) {
 			if (nlm->nlmsg_type == NLMSG_DONE ||
 			    nlm->nlmsg_type == NLMSG_ERROR) {
-				dprintf(LOG_ERR, "netlink_recv_rtgenmsg error");
+				debug_printf(LOG_ERR, "netlink_recv_rtgenmsg error");
 				goto out;
 			}
 			if (nlm->nlmsg_pid != getpid() ||

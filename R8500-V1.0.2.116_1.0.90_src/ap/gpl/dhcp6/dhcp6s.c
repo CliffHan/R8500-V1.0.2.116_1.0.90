@@ -234,7 +234,7 @@ main(argc, argv)
 
 	server6_init();
 	if ((server6_lease_file = init_leases(PATH_SERVER6_LEASE)) == NULL) {
-		dprintf(LOG_ERR, "%s" "failed to parse lease file",
+		debug_printf(LOG_ERR, "%s" "failed to parse lease file",
 			FNAME);
 		exit(1);
 	}
@@ -246,7 +246,7 @@ main(argc, argv)
 		exit(1);
 	globalgroup = (struct rootgroup *)malloc(sizeof(struct rootgroup));
 	if (globalgroup == NULL) {
-		dprintf(LOG_ERR, "failed to allocate memory %s", strerror(errno));
+		debug_printf(LOG_ERR, "failed to allocate memory %s", strerror(errno));
 		exit(1);
 	}
 	memset(globalgroup, 0, sizeof(*globalgroup));
@@ -254,7 +254,7 @@ main(argc, argv)
 	TAILQ_INIT(&globalgroup->scope.siplist);
 	TAILQ_INIT(&globalgroup->scope.ntplist);
 	if ((sfparse(conffile)) != 0) {
-		dprintf(LOG_ERR, "%s" "failed to parse addr configuration file",
+		debug_printf(LOG_ERR, "%s" "failed to parse addr configuration file",
 			FNAME);
 		exit(1);
 	}
@@ -296,20 +296,20 @@ server6_init()
 	hints.ai_flags = AI_PASSIVE;
 	error = getaddrinfo(NULL, DH6PORT_UPSTREAM, &hints, &res);
 	if (error) {
-		dprintf(LOG_ERR, "%s" "getaddrinfo: %s",
+		debug_printf(LOG_ERR, "%s" "getaddrinfo: %s",
 			FNAME, gai_strerror(error));
 		exit(1);
 	}
 	insock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (insock < 0) {
-		dprintf(LOG_ERR, "%s" "socket(insock): %s",
+		debug_printf(LOG_ERR, "%s" "socket(insock): %s",
 			FNAME, strerror(errno));
 		exit(1);
 	}
 #ifdef IPV6_RECVPKTINFO
 	if (setsockopt(insock, IPPROTO_IPV6, IPV6_RECVPKTINFO, &on,
 		       sizeof(on)) < 0) {
-		dprintf(LOG_ERR, "%s"
+		debug_printf(LOG_ERR, "%s"
 			"setsockopt(inbound, IPV6_RECVPKTINFO): %s",
 			FNAME, strerror(errno));
 		exit(1);
@@ -317,14 +317,14 @@ server6_init()
 #else
 	if (setsockopt(insock, IPPROTO_IPV6, IPV6_PKTINFO, &on,
 		       sizeof(on)) < 0) {
-		dprintf(LOG_ERR, "%s"
+		debug_printf(LOG_ERR, "%s"
 			"setsockopt(inbound, IPV6_PKTINFO): %s",
 			FNAME, strerror(errno));
 		exit(1);
 	}
 #endif
 	if (bind(insock, res->ai_addr, res->ai_addrlen) < 0) {
-		dprintf(LOG_ERR, "%s" "dhcp6s: bind(insock): %s",
+		debug_printf(LOG_ERR, "%s" "dhcp6s: bind(insock): %s",
 			FNAME, strerror(errno));
 		exit(1);
 	}
@@ -335,7 +335,7 @@ server6_init()
 	hints.ai_flags = AI_PASSIVE;
 	error = getaddrinfo(NULL, DH6PORT_DOWNSTREAM, &hints, &res);
 	if (error) {
-		dprintf(LOG_ERR, "%s" "getaddrinfo: %s",
+		debug_printf(LOG_ERR, "%s" "getaddrinfo: %s",
 			FNAME, gai_strerror(error));
 		exit(1);
 	}
@@ -344,12 +344,12 @@ server6_init()
 #if 0
 	outsock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (outsock < 0) {
-		dprintf(LOG_ERR, "%s" "socket(outsock): %s",
+		debug_printf(LOG_ERR, "%s" "socket(outsock): %s",
 			FNAME, strerror(errno));
 		exit(1);
 	}
 	if (bind(outsock, res->ai_addr, res->ai_addrlen) < 0) {
-		dprintf(LOG_ERR, "%s" "bind(outsock): %s",
+		debug_printf(LOG_ERR, "%s" "bind(outsock): %s",
 			FNAME, strerror(errno));
 		exit(1);
 	}
@@ -367,21 +367,21 @@ server6_init()
 	rmh.msg_iovlen = 1;
 	rmsgctllen = CMSG_SPACE(sizeof(struct in6_pktinfo));
 	if ((rmsgctlbuf = (char *)malloc(rmsgctllen)) == NULL) {
-		dprintf(LOG_ERR, "%s" "memory allocation failed", FNAME);
+		debug_printf(LOG_ERR, "%s" "memory allocation failed", FNAME);
 		exit(1);
 	}
 	if (num_device != 0) {
 		for (i = 0; i < num_device; i++) {
 			ifidx[i] = if_nametoindex(device[i]);
 			if (ifidx[i] == 0) {
-				dprintf(LOG_ERR, "%s"
+				debug_printf(LOG_ERR, "%s"
 					"invalid interface %s", FNAME, device[0]);
 				exit(1);
 			}
 			ifinit(device[i]);
 		}
 		if (get_duid(DUID_FILE, device[0], &server_duid)) {
-			dprintf(LOG_ERR, "%s" "failed to get a DUID", FNAME);
+			debug_printf(LOG_ERR, "%s" "failed to get a DUID", FNAME);
 			exit(1);
 		}
 	} else {
@@ -389,23 +389,23 @@ server6_init()
 		ifc.ifc_len = sizeof(buff);
 		ifc.ifc_buf = buff;
 		if ((skfd = socket(AF_INET, SOCK_DGRAM,0)) < 0) {
-			dprintf(LOG_ERR, "new socket failed");
+			debug_printf(LOG_ERR, "new socket failed");
 			exit(1);
 		}
 		if (ioctl(skfd, SIOCGIFCONF, &ifc) < 0) {
-			dprintf(LOG_ERR, "SIOCGIFCONF: %s\n", strerror(errno));
+			debug_printf(LOG_ERR, "SIOCGIFCONF: %s\n", strerror(errno));
 			exit(1);
 		}
 		ifr = ifc.ifc_req;
 		for (i = ifc.ifc_len / sizeof(struct ifreq); --i >= 0; ifr++) {
-			dprintf(LOG_DEBUG, "found device %s", ifr->ifr_name);
+			debug_printf(LOG_DEBUG, "found device %s", ifr->ifr_name);
 			ifidx[num_device] = if_nametoindex(ifr->ifr_name);
 			if (ifidx[num_device] < 0) {
-				dprintf(LOG_ERR, "%s: unknown interface.\n",
+				debug_printf(LOG_ERR, "%s: unknown interface.\n",
 					ifr->ifr_name);
 				continue;
 			}
-			dprintf(LOG_DEBUG, "if %s index is %d", ifr->ifr_name,
+			debug_printf(LOG_DEBUG, "if %s index is %d", ifr->ifr_name,
 				ifidx[num_device]);
 #ifdef mshirley
 			if (((ifr->ifr_flags & IFF_UP) == 0)) continue;
@@ -413,7 +413,7 @@ server6_init()
 			if (strcmp(ifr->ifr_name, "lo")) {
 				/* get our DUID */
 				if (get_duid(DUID_FILE, ifr->ifr_name, &server_duid)) {
-					dprintf(LOG_ERR, "%s" "failed to get a DUID", FNAME);
+					debug_printf(LOG_ERR, "%s" "failed to get a DUID", FNAME);
 					exit(1);
 				}
 			}
@@ -425,7 +425,7 @@ server6_init()
 		hints.ai_flags = 0;
 		error = getaddrinfo(DH6ADDR_ALLAGENT, DH6PORT_UPSTREAM, &hints, &res2);
 		if (error) {
-			dprintf(LOG_ERR, "%s" "getaddrinfo: %s",
+			debug_printf(LOG_ERR, "%s" "getaddrinfo: %s",
 				FNAME, gai_strerror(error));
 			exit(1);
 		}
@@ -436,7 +436,7 @@ server6_init()
 	    		sizeof(mreq6.ipv6mr_multiaddr));
 		if (setsockopt(insock, IPPROTO_IPV6, IPV6_JOIN_GROUP,
 		    &mreq6, sizeof(mreq6))) {
-			dprintf(LOG_ERR, "%s" "setsockopt(insock, IPV6_JOIN_GROUP) %s",
+			debug_printf(LOG_ERR, "%s" "setsockopt(insock, IPV6_JOIN_GROUP) %s",
 				FNAME, strerror(errno));
 			exit(1);
 		}
@@ -446,7 +446,7 @@ server6_init()
 		error = getaddrinfo(DH6ADDR_ALLSERVER, DH6PORT_UPSTREAM,
 				    &hints, &res2);
 		if (error) {
-			dprintf(LOG_ERR, "%s" "getaddrinfo: %s",
+			debug_printf(LOG_ERR, "%s" "getaddrinfo: %s",
 				FNAME, gai_strerror(error));
 			exit(1);
 		}
@@ -457,7 +457,7 @@ server6_init()
 	    		sizeof(mreq6.ipv6mr_multiaddr));
 		if (setsockopt(insock, IPPROTO_IPV6, IPV6_JOIN_GROUP,
 		    &mreq6, sizeof(mreq6))) {
-			dprintf(LOG_ERR,
+			debug_printf(LOG_ERR,
 				"%s" "setsockopt(insock, IPV6_JOIN_GROUP): %s",
 				FNAME, strerror(errno));
 			exit(1);
@@ -470,7 +470,7 @@ server6_init()
 		/* set outgoing interface of multicast packets for DHCP reconfig */
 		if (setsockopt(outsock, IPPROTO_IPV6, IPV6_MULTICAST_IF,
 		    &ifidx[i], sizeof(ifidx[i])) < 0) {
-			dprintf(LOG_ERR,
+			debug_printf(LOG_ERR,
 				"%s" "setsockopt(outsock, IPV6_MULTICAST_IF): %s",
 				FNAME, strerror(errno));
 			exit(1);
@@ -483,7 +483,7 @@ server6_init()
 	d = DHCP6_SYNCFILE_TIME;
 	timo.tv_sec = (long)d;
 	timo.tv_usec = 0;
-	dprintf(LOG_DEBUG, "set timer for syncing file ...");
+	debug_printf(LOG_DEBUG, "set timer for syncing file ...");
 	dhcp6_set_timer(&timo, sync_lease_timer);
 	return;
 }
@@ -504,7 +504,7 @@ server6_mainloop()
 		ret = select(insock + 1, &r, NULL, NULL, w);
 		switch (ret) {
 		case -1:
-			dprintf(LOG_ERR, "%s" "select: %s",
+			debug_printf(LOG_ERR, "%s" "select: %s",
 				FNAME, strerror(errno));
 			exit(1);
 			/* NOTREACHED */
@@ -547,7 +547,7 @@ server6_recv(s)
 	mhdr.msg_controllen = sizeof(cmsgbuf);
 
 	if ((len = recvmsg(insock, &mhdr, 0)) < 0) {
-		dprintf(LOG_ERR, "%s" "recvmsg: %s", FNAME, strerror(errno));
+		debug_printf(LOG_ERR, "%s" "recvmsg: %s", FNAME, strerror(errno));
 		return -1;
 	}
 	fromlen = mhdr.msg_namelen;
@@ -561,13 +561,13 @@ server6_recv(s)
 		}
 	}
 	if (pi == NULL) {
-		dprintf(LOG_NOTICE, "%s" "failed to get packet info", FNAME);
+		debug_printf(LOG_NOTICE, "%s" "failed to get packet info", FNAME);
 		return -1;
 	}
-	dprintf(LOG_DEBUG, "received message packet info addr is %s, scope id (%d)",
+	debug_printf(LOG_DEBUG, "received message packet info addr is %s, scope id (%d)",
 	    in6addr2str(&pi->ipi6_addr, 0), (unsigned int)pi->ipi6_ifindex);
 	if ((ifp = find_ifconfbyid((unsigned int)pi->ipi6_ifindex)) == NULL) {
-		dprintf(LOG_INFO, "%s" "unexpected interface (%d)", FNAME,
+		debug_printf(LOG_INFO, "%s" "unexpected interface (%d)", FNAME,
 		    (unsigned int)pi->ipi6_ifindex);
 		return -1;
 	}
@@ -575,18 +575,18 @@ server6_recv(s)
 	/* Don't accept packets not coming from LAN,
 	 *  e.g. from router's own dhcp6c client */
 	if (ifp && strcmp(ifp->ifname, "br0")) {
-		dprintf(LOG_INFO, "%s" "Don't accept pkts from non-LAN interface (%s)", FNAME, ifp->ifname);
+		debug_printf(LOG_INFO, "%s" "Don't accept pkts from non-LAN interface (%s)", FNAME, ifp->ifname);
 		return -1;
 	}
 	/* Foxconn added end pling 06/04/2014 */
 	if (len < sizeof(*dh6)) {
-		dprintf(LOG_INFO, "%s" "short packet", FNAME);
+		debug_printf(LOG_INFO, "%s" "short packet", FNAME);
 		return -1;
 	}
 
 	dh6 = (struct dhcp6 *)rdatabuf;
 
-	dprintf(LOG_DEBUG, "%s" "received %s from %s", FNAME,
+	debug_printf(LOG_DEBUG, "%s" "received %s from %s", FNAME,
 	    dhcp6msgstr(dh6->dh6_msgtype),
 	    addr2str((struct sockaddr *)&from));
 
@@ -607,7 +607,7 @@ server6_recv(s)
 		 * client message was found.
 		 */
 		if (dh6 == NULL) {
-			dprintf(LOG_INFO, "%s" "failed to parse relay fields "
+			debug_printf(LOG_INFO, "%s" "failed to parse relay fields "
 			                       "or could not find client message", FNAME);
 			return -1;
 		}
@@ -625,7 +625,7 @@ server6_recv(s)
     if (dhcp6_get_options((struct dhcp6opt *)(dh6 + 1),
         (struct dhcp6opt *)(rdatabuf + len), &optinfo, 0, 0, 0) < 0) {
     /* Foxconn modified end pling 10/04/2010 */
-		dprintf(LOG_INFO, "%s" "failed to parse options", FNAME);
+		debug_printf(LOG_INFO, "%s" "failed to parse options", FNAME);
 		return -1;
 	}
 	/* check host decl first */
@@ -646,7 +646,7 @@ server6_recv(s)
 		subnet = dhcp6_allocate_link(ifp, globalgroup, &relay);
 
 	if (!(DH6_VALID_MESSAGE(dh6->dh6_msgtype)))
-		dprintf(LOG_INFO, "%s" "unknown or unsupported msgtype %s",
+		debug_printf(LOG_INFO, "%s" "unknown or unsupported msgtype %s",
 		    FNAME, dhcp6msgstr(dh6->dh6_msgtype));
 	else
 		server6_react_message(ifp, pi, dh6, &optinfo,
@@ -676,10 +676,10 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 
 	/* the message must include a Client Identifier option */
 	if (optinfo->clientID.duid_len == 0) {
-		dprintf(LOG_INFO, "%s" "no server ID option", FNAME);
+		debug_printf(LOG_INFO, "%s" "no server ID option", FNAME);
 		return -1;
 	} else {
-		dprintf(LOG_DEBUG, "%s" "client ID %s", FNAME,
+		debug_printf(LOG_DEBUG, "%s" "client ID %s", FNAME,
 			duidstr(&optinfo->clientID));
 	}
 	/* the message must include a Server Identifier option in below messages*/
@@ -689,12 +689,12 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
         case DH6_DECLINE:
 	case DH6_RELEASE:
 		if (optinfo->serverID.duid_len == 0) {
-			dprintf(LOG_INFO, "%s" "no server ID option", FNAME);
+			debug_printf(LOG_INFO, "%s" "no server ID option", FNAME);
 			return -1;
 		}
 		/* the contents of the Server Identifier option must match ours */
 		if (duidcmp(&optinfo->serverID, &server_duid)) {
-			dprintf(LOG_INFO, "server ID %s mismatch %s",
+			debug_printf(LOG_INFO, "server ID %s mismatch %s",
 				duidstr(&optinfo->serverID), duidstr(&server_duid));
 			return -1;
 		}
@@ -708,12 +708,12 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 	dhcp6_init_options(&roptinfo);
 	/* server information option */
 	if (duidcpy(&roptinfo.serverID, &server_duid)) {
-		dprintf(LOG_ERR, "%s" "failed to copy server ID", FNAME);
+		debug_printf(LOG_ERR, "%s" "failed to copy server ID", FNAME);
 		goto fail;
 	}
 	/* copy client information back */
 	if (duidcpy(&roptinfo.clientID, &optinfo->clientID)) {
-		dprintf(LOG_ERR, "%s" "failed to copy client ID", FNAME);
+		debug_printf(LOG_ERR, "%s" "failed to copy client ID", FNAME);
 		goto fail;
 	}
 	/* if the client is not on the link */
@@ -744,7 +744,7 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 	/* prohibit a mixture of old and new style of DNS server config */
 	if (!TAILQ_EMPTY(&arg_dnslist.addrlist)) {
 		if (!TAILQ_EMPTY(&dnslist.addrlist)) {
-			dprintf(LOG_INFO, "%s" "do not specify DNS servers "
+			debug_printf(LOG_INFO, "%s" "do not specify DNS servers "
 			    "both by command line and by configuration file.",
 			    FNAME);
 			exit(1);
@@ -752,13 +752,13 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 		dnslist = arg_dnslist;
 		TAILQ_INIT(&arg_dnslist.addrlist);
 	}
-	dprintf(LOG_DEBUG, "server preference is %2x", roptinfo.pref);
+	debug_printf(LOG_DEBUG, "server preference is %2x", roptinfo.pref);
 	if (roptinfo.flags & DHCIFF_UNICAST) {
 		/* todo find the right server unicast address to client*/
 		/* get_linklocal(device, &roptinfo.server_addr) */
 		memcpy(&roptinfo.server_addr, &ifp->linklocal,
 		       sizeof(roptinfo.server_addr));
-		dprintf(LOG_DEBUG, "%s" "server address is %s",
+		debug_printf(LOG_DEBUG, "%s" "server address is %s",
 			FNAME, in6addr2str(&roptinfo.server_addr, 0));
 	}
 	/*
@@ -818,7 +818,7 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 			memcpy(&roptinfo.iaidinfo, &optinfo->iaidinfo,
 					sizeof(roptinfo.iaidinfo));
 			roptinfo.type = optinfo->type;
-			dprintf(LOG_DEBUG, "option type is %d", roptinfo.type);
+			debug_printf(LOG_DEBUG, "option type is %d", roptinfo.type);
 			addr_request = 1;
 			if (roptinfo.flags & DHCIFF_RAPID_COMMIT) {
 				resptype = DH6_REPLY;
@@ -835,17 +835,17 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 			goto fail;
 		/* DNS server */
 		if (dhcp6_copy_list(&roptinfo.dns_list.addrlist, &dnslist.addrlist)) {
-			dprintf(LOG_ERR, "%s" "failed to copy DNS servers", FNAME);
+			debug_printf(LOG_ERR, "%s" "failed to copy DNS servers", FNAME);
 			goto fail;
 		}
 		/* Foxconn added start pling 01/25/2010 */
         /* Add SIP and NTP server if available */
 		if (dhcp6_copy_list(&roptinfo.sip_list, &siplist)) {
-			dprintf(LOG_ERR, "%s" "failed to copy SIP servers", FNAME);
+			debug_printf(LOG_ERR, "%s" "failed to copy SIP servers", FNAME);
 			goto fail;
 		}
 		if (dhcp6_copy_list(&roptinfo.ntp_list, &ntplist)) {
-			dprintf(LOG_ERR, "%s" "failed to copy NTP servers", FNAME);
+			debug_printf(LOG_ERR, "%s" "failed to copy NTP servers", FNAME);
 			goto fail;
 		}
 		/* Foxconn added end pling 01/25/2010 */
@@ -881,7 +881,7 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 			/* DNS server */
 			addr_flag = ADDR_VALIDATE;
 			if (dhcp6_copy_list(&roptinfo.dns_list.addrlist, &dnslist.addrlist)) {
-				dprintf(LOG_ERR, "%s" "failed to copy DNS servers", FNAME);
+				debug_printf(LOG_ERR, "%s" "failed to copy DNS servers", FNAME);
 				goto fail;
 			}
 			roptinfo.dns_list.domainlist = dnslist.domainlist;
@@ -899,7 +899,7 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 				if (dh6->dh6_msgtype == DH6_REBIND)
 					goto fail;
 				num = DH6OPT_STCODE_NOBINDING;
-				dprintf(LOG_INFO, "%s" "Nobinding for client %s iaid %u",
+				debug_printf(LOG_INFO, "%s" "Nobinding for client %s iaid %u",
 					FNAME, duidstr(&optinfo->clientID),
 						optinfo->iaidinfo.iaid);
 				break;
@@ -922,7 +922,7 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 				/* in case there is not bindings available */
 				if (TAILQ_EMPTY(&roptinfo.addr_list)) {
 					num = DH6OPT_STCODE_NOBINDING;
-					dprintf(LOG_INFO, "%s"
+					debug_printf(LOG_INFO, "%s"
 					    "Bindings are not on link for client %s iaid %u",
 						FNAME, duidstr(&optinfo->clientID),
 						roptinfo.iaidinfo.iaid);
@@ -937,7 +937,7 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 				/* do update if this is not a confirm */
 				if (dhcp6_update_iaidaddr(&roptinfo, addr_flag)
 						!= 0) {
-					dprintf(LOG_INFO, "%s"
+					debug_printf(LOG_INFO, "%s"
 						"bindings failed for client %s iaid %u",
 						FNAME, duidstr(&optinfo->clientID),
 							roptinfo.iaidinfo.iaid);
@@ -949,7 +949,7 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 		} else
 			num = DH6OPT_STCODE_NOADDRAVAIL;
 	} else
-		dprintf(LOG_ERR, "invalid message type");
+		debug_printf(LOG_ERR, "invalid message type");
 		break;
 	default:
 		break;
@@ -985,7 +985,7 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 		/* valid client request address list */
 			if (found_binding) {
 			       if (dhcp6_update_iaidaddr(&roptinfo, addr_flag) != 0) {
-					dprintf(LOG_ERR,
+					debug_printf(LOG_ERR,
 					"assigned ipv6address for client iaid %u failed",
 						roptinfo.iaidinfo.iaid);
 					num = DH6OPT_STCODE_UNSPECFAIL;
@@ -993,7 +993,7 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 					num = DH6OPT_STCODE_SUCCESS;
 			} else {
 			       	if (dhcp6_add_iaidaddr(&roptinfo) != 0) {
-					dprintf(LOG_ERR,
+					debug_printf(LOG_ERR,
 					"assigned ipv6address for client iaid %u failed",
 						roptinfo.iaidinfo.iaid);
 					num = DH6OPT_STCODE_UNSPECFAIL;
@@ -1003,17 +1003,17 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 		}
 		/* DNS server */
 		if (dhcp6_copy_list(&roptinfo.dns_list.addrlist, &dnslist.addrlist)) {
-			dprintf(LOG_ERR, "%s" "failed to copy DNS servers", FNAME);
+			debug_printf(LOG_ERR, "%s" "failed to copy DNS servers", FNAME);
 			goto fail;
 		}
 
         /* Foxconn added start pling 01/25/2010 */
 		if (dhcp6_copy_list(&roptinfo.sip_list, &siplist)) {
-			dprintf(LOG_ERR, "%s" "failed to copy SIP servers", FNAME);
+			debug_printf(LOG_ERR, "%s" "failed to copy SIP servers", FNAME);
 			goto fail;
 		}
 		if (dhcp6_copy_list(&roptinfo.ntp_list, &ntplist)) {
-			dprintf(LOG_ERR, "%s" "failed to copy NTP servers", FNAME);
+			debug_printf(LOG_ERR, "%s" "failed to copy NTP servers", FNAME);
 			goto fail;
 		}
         /* Foxconn added end pling 01/25/2010 */
@@ -1022,10 +1022,10 @@ server6_react_message(ifp, pi, dh6, optinfo, from, fromlen)
 	}
 	/* add address status code */
   send:
-	dprintf(LOG_DEBUG, " status code: %s", dhcp6_stcodestr(num));
+	debug_printf(LOG_DEBUG, " status code: %s", dhcp6_stcodestr(num));
 	if (dhcp6_add_listval(&roptinfo.stcode_list,
 	   	&num, DHCP6_LISTVAL_NUM) == NULL) {
-		dprintf(LOG_ERR, "%s" "failed to copy "
+		debug_printf(LOG_ERR, "%s" "failed to copy "
 	    		"status code", FNAME);
 		goto fail;
 	}
@@ -1089,7 +1089,7 @@ server6_send(type, ifp, origmsg, optinfo, from, fromlen, roptinfo)
 	struct dhcp6 *dh6;
 
 	if (sizeof(struct dhcp6) > sizeof(replybuf)) {
-		dprintf(LOG_ERR, "%s" "buffer size assumption failed", FNAME);
+		debug_printf(LOG_ERR, "%s" "buffer size assumption failed", FNAME);
 		return (-1);
 	}
 
@@ -1098,7 +1098,7 @@ server6_send(type, ifp, origmsg, optinfo, from, fromlen, roptinfo)
 	                                (struct dhcp6_relay *) (replybuf +
 	                                                        sizeof (replybuf)),
 	                                optinfo)) < 0) {
-		dprintf(LOG_INFO, "%s" "failed to construct relay message", FNAME);
+		debug_printf(LOG_INFO, "%s" "failed to construct relay message", FNAME);
 		return (-1);
 	}
 
@@ -1113,7 +1113,7 @@ server6_send(type, ifp, origmsg, optinfo, from, fromlen, roptinfo)
 					(struct dhcp6opt *)(replybuf +
 							    sizeof(replybuf)),
 					roptinfo)) < 0) {
-		dprintf(LOG_INFO, "%s" "failed to construct reply options",
+		debug_printf(LOG_INFO, "%s" "failed to construct reply options",
 			FNAME);
 		return (-1);
 	}
@@ -1138,19 +1138,19 @@ server6_send(type, ifp, origmsg, optinfo, from, fromlen, roptinfo)
 		dst.sin6_port = upstream_port;
 
 	dst.sin6_scope_id = ((struct sockaddr_in6 *)from)->sin6_scope_id;
-	dprintf(LOG_DEBUG, "send destination address is %s, scope id is %d",
+	debug_printf(LOG_DEBUG, "send destination address is %s, scope id is %d",
 		addr2str((struct sockaddr *)&dst), dst.sin6_scope_id);
     /* Foxconn modified start pling 08/15/2009 */
     /* why use 'outsock' to send to client? */
 	//if (transmit_sa(outsock, &dst, replybuf, len) != 0) {
 	if (transmit_sa(insock, &dst, replybuf, len) != 0) {
     /* Foxconn modified end pling 08/15/2009 */
-		dprintf(LOG_ERR, "%s" "transmit %s to %s failed", FNAME,
+		debug_printf(LOG_ERR, "%s" "transmit %s to %s failed", FNAME,
 			dhcp6msgstr(type), addr2str((struct sockaddr *)&dst));
 		return (-1);
 	}
 
-	dprintf(LOG_DEBUG, "%s" "transmit %s to %s", FNAME,
+	debug_printf(LOG_DEBUG, "%s" "transmit %s to %s", FNAME,
 		dhcp6msgstr(type), addr2str((struct sockaddr *)&dst));
 
 	/* Foxconn added start pling 04/13/2015 */
@@ -1168,12 +1168,12 @@ server6_send(type, ifp, origmsg, optinfo, from, fromlen, roptinfo)
 			for (dp = TAILQ_FIRST(&roptinfo->addr_list); dp; 
 				 dp = TAILQ_NEXT(dp, link)) {
 				sprintf(link_local_addr, "%s", addr2str((struct sockaddr *)&dst));
-				dprintf(LOG_DEBUG, "%s" "Global address is %s, lladdr is %s " , FNAME, 
+				debug_printf(LOG_DEBUG, "%s" "Global address is %s, lladdr is %s " , FNAME, 
 					in6addr2str(&dp->val_dhcp6addr.addr,0), link_local_addr);
 				if (get_client_mac(link_local_addr, client_mac)) {
 					sprintf(command, "/usr/sbin/ip -6 neigh replace %s lladdr %s dev br0", 
 							in6addr2str(&dp->val_dhcp6addr.addr,0), client_mac);
-					dprintf(LOG_DEBUG, "%s" "Command is '%s' ", FNAME, command);
+					debug_printf(LOG_DEBUG, "%s" "Command is '%s' ", FNAME, command);
 					system(command);
 				}
 			}
@@ -1233,7 +1233,7 @@ dhcp6_parse_relay(relay_msg, endptr, optinfo, relay_addr)
 		            calloc (1, sizeof (struct relay_listval));
 
 		if (relay_val == NULL) {
-			dprintf(LOG_ERR, "%s" "failed to allocate memory", FNAME);
+			debug_printf(LOG_ERR, "%s" "failed to allocate memory", FNAME);
 			relayfree(&optinfo->relay_list);
 			return NULL;
 		}
@@ -1277,7 +1277,7 @@ dhcp6_parse_relay(relay_msg, endptr, optinfo, relay_addr)
 			optlen = ntohs(optlen);
 
 			if ((char *) (option + 1) + optlen > (char *) option_endptr) {
-				dprintf(LOG_ERR, "%s" "invalid option length in %s option",
+				debug_printf(LOG_ERR, "%s" "invalid option length in %s option",
 				        FNAME, dhcp6optstr(opt));
 				relayfree(&optinfo->relay_list);
 				return NULL;
@@ -1291,7 +1291,7 @@ dhcp6_parse_relay(relay_msg, endptr, optinfo, relay_addr)
 						relay_val->intf_id = (struct intf_id *)
 						                     malloc (sizeof (struct intf_id));
 						if (relay_val->intf_id == NULL) {
-							dprintf(LOG_ERR, "%s" "failed to allocate memory",
+							debug_printf(LOG_ERR, "%s" "failed to allocate memory",
 							        FNAME);
 							relayfree(&optinfo->relay_list);
 							return NULL;
@@ -1302,7 +1302,7 @@ dhcp6_parse_relay(relay_msg, endptr, optinfo, relay_addr)
 							                              malloc (optlen);
 
 							if (relay_val->intf_id->intf_id == NULL) {
-								dprintf(LOG_ERR, "%s"
+								debug_printf(LOG_ERR, "%s"
 								                 "failed to allocate memory",
 							            FNAME);
 								relayfree(&optinfo->relay_list);
@@ -1316,12 +1316,12 @@ dhcp6_parse_relay(relay_msg, endptr, optinfo, relay_addr)
 						}
 					}
 					else {
-						dprintf(LOG_ERR, "%s" "Invalid length for interface "
+						debug_printf(LOG_ERR, "%s" "Invalid length for interface "
 						                      "identifier option", FNAME);
 					}
 				}
 				else {
-					dprintf(LOG_INFO, "%s"
+					debug_printf(LOG_INFO, "%s"
 						"Multiple interface identifier "
 						"options in RELAY-FORW Message ",
 					        FNAME);
@@ -1333,7 +1333,7 @@ dhcp6_parse_relay(relay_msg, endptr, optinfo, relay_addr)
 				if (relayed_msg == NULL)
 					relayed_msg = (struct dhcp6 *) (option + 1);
 				else {
-					dprintf(LOG_INFO, "%s" "Duplicated Relay Message option",
+					debug_printf(LOG_INFO, "%s" "Duplicated Relay Message option",
 					        FNAME);
 					relayfree(&optinfo->relay_list);
 					return NULL;
@@ -1341,7 +1341,7 @@ dhcp6_parse_relay(relay_msg, endptr, optinfo, relay_addr)
 			}
 			else   /* No other options besides interface identifier and relay
 			          message make sense, so ignore them with a warning */
-				dprintf(LOG_INFO, "%s" "Unsupported option %s found in "
+				debug_printf(LOG_INFO, "%s" "Unsupported option %s found in "
 			                           "RELAY-FORW message",
 				        FNAME, dhcp6optstr(opt));
 
@@ -1364,7 +1364,7 @@ dhcp6_parse_relay(relay_msg, endptr, optinfo, relay_addr)
 				relay_msg = (struct dhcp6_relay *) relayed_msg;
 		}
 		else {
-			dprintf(LOG_ERR, "%s" "invalid relayed message", FNAME);
+			debug_printf(LOG_ERR, "%s" "invalid relayed message", FNAME);
 			relayfree(&optinfo->relay_list);
 			return NULL;
 		}
@@ -1392,7 +1392,7 @@ dhcp6_set_relay (msg, endptr, optinfo)
 	     relay = TAILQ_NEXT(relay, link)) {
 		/* bounds check */
 		if (((char *) msg) + sizeof (struct dhcp6_relay) >= (char *) endptr) {
-			dprintf(LOG_ERR, "%s" "insufficient buffer size for RELAY-REPL",
+			debug_printf(LOG_ERR, "%s" "insufficient buffer size for RELAY-REPL",
 			        FNAME);
 			return -1;
 		}
@@ -1409,7 +1409,7 @@ dhcp6_set_relay (msg, endptr, optinfo)
 			/* bounds check */
 			if ((((char *) option) + sizeof(struct dhcp6opt) +
 			    relay->intf_id->intf_len) >= (char *) endptr) {
-				dprintf(LOG_ERR, "%s" "insufficient buffer size for RELAY-REPL",
+				debug_printf(LOG_ERR, "%s" "insufficient buffer size for RELAY-REPL",
 				        FNAME);
 				return -1;
 			}
@@ -1431,7 +1431,7 @@ dhcp6_set_relay (msg, endptr, optinfo)
 
 		/* bounds check */
 		if ((char *) (option + 1) >= (char *) endptr) {
-			dprintf(LOG_ERR, "%s" "insufficient buffer size for RELAY-REPL",
+			debug_printf(LOG_ERR, "%s" "insufficient buffer size for RELAY-REPL",
 			        FNAME);
 			return -1;
 		}

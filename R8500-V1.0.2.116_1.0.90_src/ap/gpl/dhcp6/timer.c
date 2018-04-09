@@ -99,14 +99,14 @@ dhcp6_add_timer(struct dhcp6_timer *(*timeout)(void *),
 {
 	struct dhcp6_timer *newtimer;
 	if ((newtimer = malloc(sizeof(*newtimer))) == NULL) {
-		dprintf(LOG_ERR, "%s" "can't allocate memory", FNAME);
+		debug_printf(LOG_ERR, "%s" "can't allocate memory", FNAME);
 		return (NULL);
 	}
 
 	memset(newtimer, 0, sizeof(*newtimer));
 
 	if (timeout == NULL) {
-		dprintf(LOG_ERR, "%s" "timeout function unspecified", FNAME);
+		debug_printf(LOG_ERR, "%s" "timeout function unspecified", FNAME);
 		return (NULL);
 	}
 	newtimer->expire = timeout;

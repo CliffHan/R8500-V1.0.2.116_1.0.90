@@ -39,10 +39,10 @@
 #include "hash.h"
 
 #ifdef	__GNUC__
-extern void dprintf(int, const char *, ...)
+extern void debug_printf(int, const char *, ...)
 	__attribute__ ((__format__(__printf__, 2, 3)));
 #else
-extern void dprintf __P((int, const char *, ...));
+extern void debug_printf __P((int, const char *, ...));
 #endif
 
 struct hash_table * hash_table_create (
@@ -55,7 +55,7 @@ struct hash_table * hash_table_create (
 	struct hash_table *hash_tbl;
 	hash_tbl = malloc(sizeof(struct hash_table));
 	if (!hash_tbl) {
-		dprintf(LOG_ERR, "Couldn't allocate hash table");
+		debug_printf(LOG_ERR, "Couldn't allocate hash table");
 		return NULL;
 	}
 	hash_tbl->hash_list = malloc(sizeof(struct hashlist_element *)*hash_size);
@@ -76,7 +76,7 @@ int  hash_add(struct hash_table *hash_tbl, const void *key, void *data)
 	struct hashlist_element *element;
 	element = (struct hashlist_element *)malloc(sizeof(struct hashlist_element));
 	if(!element){
-		dprintf(LOG_ERR, "Could not malloc hashlist_element");
+		debug_printf(LOG_ERR, "Could not malloc hashlist_element");
 		return (-1);
 	}
 	if (hash_full(hash_tbl)) {
@@ -84,7 +84,7 @@ int  hash_add(struct hash_table *hash_tbl, const void *key, void *data)
 	}
 	index = hash_tbl->hash_function(key) % hash_tbl->hash_size;
 	if (hash_search(hash_tbl, key)) {
-		dprintf(LOG_DEBUG, "hash_add: duplicated item");
+		debug_printf(LOG_DEBUG, "hash_add: duplicated item");
 		return HASH_COLLISION;
 	}
 	element->next = hash_tbl->hash_list[index];
@@ -148,7 +148,7 @@ int grow_hash(struct hash_table *hash_tbl) {
 	new_table = hash_table_create(hash_size, hash_tbl->hash_function, 
 			hash_tbl->find_hashkey, hash_tbl->compare_hashkey);
 	if (!new_table) {
-		dprintf(LOG_ERR, "couldn't grow hash table");
+		debug_printf(LOG_ERR, "couldn't grow hash table");
 		return (-1);
 	}
         for (i = 0; i < hash_tbl->hash_size; i++) {

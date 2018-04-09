@@ -76,10 +76,10 @@ extern int in6_addrscopebyif __P((struct in6_addr *, char *));
 extern int in6_scope __P((struct in6_addr *));
 extern void setloglevel __P((int));
 #ifdef	__GNUC__
-extern void dprintf(int, const char *, ...)
+extern void debug_printf(int, const char *, ...)
 	__attribute__ ((__format__(__printf__, 2, 3)));
 #else
-extern void dprintf __P((int, const char *, ...));
+extern void debug_printf __P((int, const char *, ...));
 #endif
 
 extern int get_duid __P((const char *, const char *, struct duid *));
