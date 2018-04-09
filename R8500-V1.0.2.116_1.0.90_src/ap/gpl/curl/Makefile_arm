@@ -35,7 +35,8 @@ curl:
 	for i in ${SUBDIRS}; do \
 		(cd $$i; make) || exit 1; \
 	done
-	cp $(CURL_DIR_PATH)/$(CURL_DIR)/src/curl $(CURL_DIR_PATH)/binary
+	mkdir -p $(CURL_DIR_PATH)/binary
+	cp $(CURL_DIR_PATH)/$(CURL_DIR)/src/curl $(CURL_DIR_PATH)/binary/
 	
 	 
 libcurl_conf:
@@ -47,7 +48,8 @@ libcurl:
 	for i in ${SUBDIRS}; do \
 		(cd $$i; make) || exit 1; \
 	done
-	cp $(CURL_DIR_PATH)/$(CURL_DIR)/lib/.libs/libcurl.* $(CURL_DIR_PATH)/binary	
+	mkdir -p $(CURL_DIR_PATH)/binary
+	cp $(CURL_DIR_PATH)/$(CURL_DIR)/lib/.libs/libcurl.* $(CURL_DIR_PATH)/binary/
 
 sub_clean:
 	cd $(CURL_DIR); \
