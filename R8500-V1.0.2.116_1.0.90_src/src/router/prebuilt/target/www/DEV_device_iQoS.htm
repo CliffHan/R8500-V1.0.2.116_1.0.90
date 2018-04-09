@@ -1,0 +1,359 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<%11%>
+<title>NETGEAR Router <%12%></title> 
+<link rel="stylesheet" href="<%13%>">
+<link rel="stylesheet" href="css/scrollbar.css">
+<link rel="stylesheet" href="css/button.css">
+
+<script src="jquery.js"></script>
+<script src="script/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="script/jquery.jscrollpane.min.js"></script>
+<script type="text/javascript" src="script/sorttable.js"></script>
+
+<script src="script/script.js"></script>
+<link rel="stylesheet" href="form.css">
+<%14%>
+<style type="text/css">
+
+//define A
+a:link{
+	COLOR: blue;
+	background : transparent; 
+}
+a:visited {
+	COLOR: blue;
+	background : transparent; 
+}
+
+a:hover {
+	COLOR: blue;
+	background : transparent; 
+    cursor:pointer;
+}
+
+a:active {
+	COLOR: blue;
+	background : transparent;  
+}
+a {
+	 COLOR: blue; TEXT-DECORATION: underline
+}
+.clickMe {
+   cursor:pointer;
+}
+</style>
+<script language="javascript" type="text/javascript">
+<!--
+  
+    $(document).ready(function()
+    {	
+//        $('.scroll-pane').jScrollPane('scrollbarMargin:5px');
+        $("#target").submit(function() {
+            buttonFilter();
+        });
+
+    });
+
+
+    function setHelpIframeVisible(){
+        $('.help-frame-div').css("visibility","visible");
+    }
+
+
+    function showHelpIframe() {
+
+        var imgSrc=document.getElementById('help-button');
+
+        if(imgSrc.src.search("up")>=0)
+        {
+            $(".help-frame-div").show();
+            window.frames["helpframe"].$('#content').jScrollPane({showArrows:true});
+            imgSrc.src="img/helparrowdown-icon.gif";
+        }
+        else
+        {
+            $(".help-frame-div").hide();
+            imgSrc.src="img/helparrowup-icon.gif";
+            setTimeout(setHelpIframeVisible,500);
+        }
+        if((navigator.appName.indexOf("Internet Explorer")==-1) ||
+           (navigator.appVersion.indexOf("MSIE 9")==-1))
+             change_size();
+
+    }
+
+    function moveToHTMLend()
+    {
+        window.location.href='#helpframe-anchor';
+        setHelpIframeVisible();
+    }
+
+
+    function loadhelp(fname,anchname)
+    {
+                var pane = window.frames["helpframe"].$('#content');
+                var imgSrc=document.getElementById('help-button');
+                if(imgSrc.src.search("up")<0)
+                {
+
+                        $(".help-frame-div").show();
+                        pane.jScrollPane({showArrows:true});
+
+
+                        if ((loadhelp.arguments.length == 1 ) || (anchname == "" ))
+                        {
+                                window.frames["helpframe"].location.href=fname+"_h.htm";
+                                $(".help-frame-div").show();
+                        }
+                        else
+                        {
+                                window.frames["helpframe"].location.href=fname+"_h.htm#" + anchname;
+                                $(".help-frame-div").show();
+                        }
+
+                        $(".help-frame-div").show();
+                        pane.jScrollPane({showArrows:true});
+
+                }
+    }
+
+function adjust_column_backColor()
+{
+    var i;
+    var row_rules_wired = document.getElementsByName("row_rules_wired");
+    var row_rules_wireless = document.getElementsByName("row_rules_wireless");
+	var row_rules_wireless_2g = document.getElementsByName("row_rules_wireless_2g");
+	var row_rules_wireless_5g = document.getElementsByName("row_rules_wireless_5g");
+    
+    for(i=0 ; i<row_rules_wired.length ; i++) {
+        if(i%2 == 0)
+            row_rules_wired[i].style.backgroundColor = "white";
+        else
+            row_rules_wired[i].style.backgroundColor = "#e5e5e5";
+    }
+	
+    for(i=0 ; i<row_rules_wireless.length ; i++) {
+    if(i%2 == 0)
+        row_rules_wireless[i].style.backgroundColor = "white";
+    else
+        row_rules_wireless[i].style.backgroundColor = "#e5e5e5";
+    }
+	
+    for(i=0 ; i<row_rules_wireless_2g.length ; i++) {
+    if(i%2 == 0)
+        row_rules_wireless_2g[i].style.backgroundColor = "white";
+    else
+        row_rules_wireless_2g[i].style.backgroundColor = "#e5e5e5";
+    }
+	
+    for(i=0 ; i<row_rules_wireless_5g.length ; i++) {
+    if(i%2 == 0)
+        row_rules_wireless_5g[i].style.backgroundColor = "white";
+    else
+        row_rules_wireless_5g[i].style.backgroundColor = "#e5e5e5";
+    }
+	
+	var enable_access_control = document.getElementsByName("enable_access_control");
+    
+    if(enable_access_control[0].value != "1") {	
+		for(i=0 ; i<$('td[name=show_status]').length ; i++)
+		{
+			$('td[name=show_status]')[i].style.display = "none";	
+		}
+	}
+}
+function loadSettings()
+{
+    var isIE = navigator.userAgent.search("MSIE") > -1; 
+    var isFirefox = navigator.userAgent.search("Firefox") > -1;
+    var isOpera = navigator.userAgent.search("Opera") > -1;
+    var isSafari = navigator.userAgent.search("Safari") > -1;
+    var isIE8=navigator.appVersion.indexOf("MSIE 8") > -1;  
+    
+    if(isIE)
+    {
+        $('.device-bwBarLabel').css("width","80px"); 
+    }
+    grayout_button("edit");
+    adjust_column_backColor();
+    $('#checkboxGroup li input').click(function(){
+  if($(this).prop('checked')){
+    $('#checkboxGroup li input:checkbox').prop('checked',false);
+    $(this).prop('checked',true);
+  }
+  })
+
+
+    var cf = document.forms[0];
+	var iqos_bw;
+	var bandwidthUp;
+	var bandwidthDown;
+	if("1"=="<%2148%>"){
+	//uplink
+    iqos_bw = parseFloat(<%2149%>/1000000);
+	bandwidthUp = iqos_bw.toFixed(2);
+    //downlink
+	iqos_bw = parseFloat(<%2150%>/1000000);
+	bandwidthDown = iqos_bw.toFixed(2);   
+	}else{
+	//uplink
+    iqos_bw = parseFloat(<%2525%>/1000000);
+	bandwidthUp = iqos_bw.toFixed(2);
+    //downlink
+	iqos_bw = parseFloat(<%2526%>/1000000);
+	bandwidthDown = iqos_bw.toFixed(2);   	
+	}
+    document.getElementById('uplink_bd').innerHTML = bandwidthUp + " Mbps";	
+    document.getElementById('downlink_bd').innerHTML = bandwidthDown + " Mbps";
+
+    var enable_access_control = document.getElementsByName("enable_access_control");
+
+    if(enable_access_control[0].value != "1") {	
+        for(i=0 ; i<$('td[name=show_status]').length ; i++)
+        {
+                $('td[name=show_status]')[i].style.display = "none";	
+        }
+    }
+    
+}   
+function get_devinfo(dev_num){
+    var cf = document.forms[0];
+    cf.select_dev.value = dev_num;
+    cf.page_submit.value = "get_devinfo";
+    cf.submit();
+}
+
+function handle_checkboxElements(checkbox)
+{
+    var i,checked_count=0;
+    var checkboxElements = document.getElementsByName(checkbox.name);    
+    var cf = document.forms[0];
+    if(checkbox.checked==false){
+        checkbox.checked==false;
+        grayout_button("edit");
+    }else{
+        for(i=0 ; i<checkboxElements.length ; i++) {
+            checkboxElements[i].checked=false;
+        }
+        ungrayout_button("edit");
+        checkbox.checked=true;
+        cf.page_submit.value = "edit_dev";
+    }
+}
+//--></script></head>
+<body  onload="change_size();loadSettings();" class="page-body"  onResize="change_size();" >
+<img class="cover-image" src="<%58%>">
+<img class="body-image" src="<%59%>">
+<div id="full-page-container">
+
+<form id="target"  method="post" action="devices.cgi">
+<input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
+<img class="subtop-image" src="<%60%>">
+<div class="subhead2"> <%473%></div>
+<table border="0"    style="height:370px"  class="subhead2-table">
+
+<tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
+
+<tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+<tr>
+    <td nowrap colspan="2" align="right"><%810%></td>
+</tr>
+<tr>
+    <td>
+    <table border="0" cellpadding="3" cellspacing="0" width="100%">
+        <tr>
+            <td width="10%" align="left">
+            <button value="Edit" onclick="buttonClick(this,'Edit');"  type="SUBMIT" name="edit" id="edit" class="button-rule" ><span class="roundleft_button"><span>&nbsp;&nbsp; <%289%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+            </td>   
+            <td width="40%" align="left">
+            <div id="ookla">
+            <table border="0" CELLSPACING=0> 
+            <tr><td height="40px" width="152px" BACKGROUND="img/download.png"><span id="downlink_bd"></span></td><td height="40px" width="152px"  BACKGROUND="img/upload.png"><span id="uplink_bd"></span></td></tr>
+            </table> 
+            </div>
+            </td>             
+            <td width="30%" align="left">
+                <%516%>:
+				<!-- access_control_mode: 1: enabled 0: disabled -->
+				<%811%>
+                <%812%>
+				<%813%>
+				<%814%>
+                <%815%>
+				<%816%>
+				<br>
+				<!-- access_all_new_devices: 1: allow all 0: block all -->
+				<%817%>
+
+            </td>
+            <td width="20%" align="right">
+                &nbsp;&nbsp;&nbsp;<button value="Cancel" onclick="buttonClick(this,'Refresh');"  type="SUBMIT" name="refresh" class="button-rule" ><span class="roundleft_button"><span class="refresh-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%818%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+            </td>
+        </tr>        
+    </table>
+    </td>
+</tr>
+<tr>
+	<td colspan="2">
+	<table class="sortable" border="1" cellpadding="2" cellspacing="0" width="100%">
+	<tr class="table_header">
+		<td nowrap align="center" width="5%"><span class="subheadtext"></span></td>
+		<td nowrap align="center" width="9%" name="show_status"><span class="subheadtext"><%820%></span></td>
+		<td nowrap align="center" width="10%"><span class="subheadtext"><%2050%></span></td>
+		<td nowrap align="center" width="10%"><span class="subheadtext"><%852%></span></td>
+		<td nowrap align="center" width="20%"><span class="subheadtext"><%366%></span></td>
+		<td nowrap align="center" width="22%"><span class="subheadtext"><img src="img/down_ookla.png" width="19px" height="25px" class="device-icon"><%2527%></span></td>
+		<td nowrap align="center" width="22%"><span class="subheadtext"><img src="img/up_ookla.png" width="22px" height="25px" class="device-icon"><%2528%></span></td>
+	</tr>
+        <%2529%>
+	</table>
+	</td>
+</tr>
+<tr>
+ <td nowrap colspan="2">&nbsp;</td>
+</tr>
+<tr>
+ <td nowrap colspan="2">&nbsp;</td>
+</tr>
+<tr>
+ <td nowrap colspan="2"><b><%831%></b></td>
+</tr>
+<tr>
+	<td colspan="2">
+	<table class="sortable" border="1" cellpadding="2" cellspacing="0" width="100%">
+	<tr class="table_header">
+		<td nowrap align="center" width="40%"><span class="subheadtext"><%366%></span></td>
+		<td nowrap align="center" width="20%"><span class="subheadtext"><%832%></span></td>
+		<td nowrap align="center" width="20%"><span class="subheadtext"><%833%></span></td>
+		<td nowrap align="center" width="20%"><span class="subheadtext"><%834%></span></td>
+	</tr>
+	<%835%>	
+	</table>
+	</td>
+</tr>
+<tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+</table></div></td></tr>
+<tr valign="middle" align="center"><td class="table-seperate-border" colspan="2" style="padding-left:0px"><div class="help-frame-div" > <iframe id="helpframe"  src="DEV_device2_h.htm" class="help-iframe" scrolling="no" name="helpframe" frameborder="0" onload="showHelpIframe();"></iframe> </div> </td> </tr>
+</table>
+   <img class="subfooter-image" src="img/subhead2-bottom.gif">
+<div class="subhead2-bottom" >
+    <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%192%> </span>
+    <span class="button-help-arrow">
+      <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%193%> </span>
+      </div>
+
+
+    <input name="select_dev" type="hidden" value= "0">
+    <input name="page_submit" type="hidden" value= "">
+    <input name="enable_access_control" type="hidden" value= "<%836%>">
+<a name="helpframe-anchor"></a>
+</form>
+
+</div>
+</body>
+</html>
+

@@ -1,0 +1,3552 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<%11%>
+<title>NETGEAR Router <%12%></title>
+<link rel="stylesheet" href="<%13%>">
+<link rel="stylesheet" href="css/scrollbar.css">
+<link rel="stylesheet" href="css/button.css">
+
+<script src="jquery.js"></script>
+<script src="script/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="script/jquery.jscrollpane.min.js"></script>
+
+<script src="script/script.js"></script>
+<link rel="stylesheet" href="form.css">
+<STYLE TYPE="text/javascript">
+    classes.num.all.fontFamily = "Courier";
+    classes.num.all.fontSize = "10pt" ;
+</style>
+<%14%>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+
+var initRegion;
+var changeMsg = "<%15%>";
+var notShown = true; // only shown region change message once
+var initialized = false;
+
+//"--",Asia,Australia,Canada,China,Europe,Japan,India,Korea,Malaysia,Mexico,Singapore,South America,Taiwan,USA
+var StartChannel = new Array(  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1);
+var FinishChannel = new Array(11, 13, 13, 11, 11, 13, 13, 13, 13, 13, 11, 13, 13, 11, 11);
+ 
+var showDual5GBand;
+var dfs_note=' (DFS)';
+var Band1Channel_20M = new Array (36,40,44,48);
+var Band2Channel_20M = new Array (52,56,60,64);
+var Band3Channel_20M = new Array (100,104,108,112,116,120,124,128,132,136,140);
+var Band4Channel_20M = new Array (149,153,157,161,165);
+var Band1Channel_40M = new Array (36,40,44,48);
+var Band2Channel_40M = new Array (52,56,60,64);
+var Band3Channel_40M = new Array (100,104,108,112,116,120,124,128,132,136);
+var Band4Channel_40M = new Array (149,153,157,161);
+
+var Band1Channel_80M = new Array (36,40,44,48);
+var Band2Channel_80M = new Array (52,56,60,64);
+var Band4Channel_80M = new Array (149,153,157,161);
+
+/* r10 ver. */
+
+var Band2Channel_TW_20M = new Array (56,60,64); 
+var Band2Channel_TW_40M = new Array (60,64);
+var Band2Channel_TW_80M = new Array (60,64);
+
+var Band3Channel_CE_20M = new Array (100,104,108,112,116,120,124,128,132,136,140);
+var Band3Channel_CE_40M = new Array (100,104,108,112,116,120,124,128,132,136);
+var Band3Channel_CE_80M = new Array (100,104,108,112,116,120,124,128);
+
+var Band3Channel_JP_20M = new Array (100,104,108,112,116,120,124,128,132,136,140);
+var Band3Channel_JP_40M = new Array (100,104,108,112,116,120,124,128,132,136);
+var Band3Channel_JP_80M = new Array (100,104,108,112,116,120,124,128);
+
+var OpMode_BG_TEXT;
+var OpMode_20M_TEXT;
+var OpMode_40M_TEXT;
+var OpMode_5G_BG_TEXT;
+var OpMode_5G_20M_TEXT;
+var OpMode_5G_40M_TEXT;
+var OpMode_BG_VALUE;
+var OpMode_20M_VALUE;
+var OpMode_40M_VALUE;
+var OpMode_5G_BG_VALUE;
+var OpMode_5G_20M_VALUE;
+var OpMode_5G_40M_VALUE;
+var selected2=100,selected3=100, ch_selected=100;
+
+var curr_region = "<%16%>"
+var curr_channel_an_value = "<%17%>";
+var curr_channel_an_2_value = "<%18%>";
+var curr_channel_an_index = 0;
+var curr_channel_an_2_index = 0;
+
+var chgCh_cnt = 0;  
+
+
+    var api;
+
+
+    $(document).ready(function()
+    {
+        $("#target").submit(function() {
+            buttonFilter();
+        });
+
+        $('.scroll-pane').each(function()
+        {
+/*
+            $(this).jScrollPane(
+            {
+                showArrows: $(this).is('.arrow')
+            });
+*/                        
+            var throttleTimeout;
+            api = $(this).data('jsp');
+            $('.scroll-pane').bind('change',function()
+            {
+                if ($.browser.msie) 
+                {
+                     // IE fires multiple resize events while you are dragging the browser window which
+                     // causes it to crash if you try to update the scrollpane on every one. So we need
+                     // to throttle it to fire a maximum of once every 50 milliseconds...
+                     if (!throttleTimeout) 
+                     {
+                         throttleTimeout = setTimeout(function()
+                         {
+//                             api.reinitialise();
+                             throttleTimeout = null;
+                         },0);
+                     }
+                } 
+                else 
+                {
+//                     api.reinitialise();
+                }
+            });
+
+        })
+    }); // document ready
+
+
+    $(document).ready(function()
+    {	
+//        $('.scroll-pane').jScrollPane('scrollbarMargin:5px');
+
+    });
+
+
+    function setHelpIframeVisible(){
+        $('.help-frame-div').css("visibility","visible");
+    }
+
+
+function showHelpIframe() 
+{
+    var imgSrc=document.getElementById('help-button');
+
+    if(imgSrc.src.search("up")>=0)
+    {
+        $(".help-frame-div").show();
+        window.frames["helpframe"].$('#content').jScrollPane({showArrows:true});
+        imgSrc.src="img/helparrowdown-icon.gif";
+    }
+    else
+    {
+        $(".help-frame-div").hide();
+        imgSrc.src="img/helparrowup-icon.gif";
+        setTimeout(setHelpIframeVisible,500);
+    }
+    if((navigator.appName.indexOf("Internet Explorer")==-1) ||
+        (navigator.appVersion.indexOf("MSIE 9")==-1))
+            change_size();
+}
+
+function moveToHTMLend()
+{
+    window.location.href='#helpframe-anchor';
+    setHelpIframeVisible();
+}
+
+
+function loadhelp(fname,anchname)
+{
+    var pane = window.frames["helpframe"].$('#content');
+    var imgSrc=document.getElementById('help-button');
+    if(imgSrc.src.search("up")<0)
+    {
+		$(".help-frame-div").show();
+        pane.jScrollPane({showArrows:true});
+
+        if ((loadhelp.arguments.length == 1 ) || (anchname == "" ))
+        {
+            window.frames["helpframe"].location.href=fname+"_h.htm";
+            $(".help-frame-div").show();
+        }
+        else
+        {
+            window.frames["helpframe"].location.href=fname+"_h.htm#" + anchname;
+            $(".help-frame-div").show();
+        }
+
+        $(".help-frame-div").show();
+        pane.jScrollPane({showArrows:true});
+
+    }
+}
+	
+function disablewifi()
+{
+	var cf = document.forms[0];
+	if (cf.sku_name.value == "")
+	{
+		$("input:checkbox").attr("disabled", true); 
+		$("input:radio").attr("disabled", true);
+		$("input:text").attr("disabled", true);
+		$("select").attr("disabled", true);
+		cf.w_channel.value="";
+		cf.w_channel_an.value="";
+		cf.w_channel_an_2.value="";
+		cf.region_select.value="";
+		grayout_applybtn("applyBtn");
+		grayout_button("cancelBtn");
+
+	}
+}
+		
+
+function initScrn()
+{
+    var defaultKey;
+    var fm=document.forms[0];
+    var i;
+    var sec_type_2G = fm.security_type_2G.value;
+    var sec_type_5G = fm.security_type_5G.value;
+    var sec_type_5G_2 = fm.security_type_5G_2.value;
+    
+    if(fm.wifi_dual_5g_band.value!="0")
+    {
+        showDual5GBand=1;
+    }
+    else
+    {
+        showDual5GBand=0;
+    }
+        
+    OpMode_BG_TEXT=fm.opmode.options[0].text; 
+    OpMode_20M_TEXT=fm.opmode.options[1].text; 
+    OpMode_40M_TEXT=fm.opmode.options[2].text; 
+    OpMode_BG_VALUE=fm.opmode.options[0].value;
+    OpMode_20M_VALUE=fm.opmode.options[1].value;
+    OpMode_40M_VALUE=fm.opmode.options[2].value;
+    OpMode_5G_BG_TEXT=fm.opmode_an.options[0].text; 
+    OpMode_5G_20M_TEXT=fm.opmode_an.options[1].text; 
+    if(fm.opmode_an.options.length==3)
+        OpMode_5G_40M_TEXT=fm.opmode_an.options[2].text; 
+    OpMode_5G_BG_VALUE=fm.opmode_an.options[0].value;
+    OpMode_5G_20M_VALUE=fm.opmode_an.options[1].value;
+    if(fm.opmode_an.options.length==3)
+        OpMode_5G_40M_VALUE=fm.opmode_an.options[2].value;
+    var BoardId =  fm.board_id.value;    
+    
+	if(fm.tempSetting.value == 1)
+	{
+		var temp_region = parseInt(fm.tempRegion.value);
+		if (fm.tempRegion.value == "")
+		{
+		    if (parseInt(fm.setRegion.value) == 12)
+			    fm.WRegion.selectedIndex=10;
+		    else if (parseInt(fm.setRegion.value) >= 10 && parseInt(fm.setRegion.value) <= 11)
+			    fm.WRegion.selectedIndex=parseInt(fm.setRegion.value)+1;
+		    else
+			    fm.WRegion.selectedIndex=parseInt(fm.setRegion.value);
+		}
+		else if (temp_region == 12)
+			fm.WRegion.selectedIndex=10;
+		else if (temp_region >= 10 && temp_region <= 11)
+			fm.WRegion.selectedIndex=temp_region+1;
+		else
+			fm.WRegion.selectedIndex=temp_region;
+	}
+        
+    initRegion = fm.WRegion.selectedIndex;
+    setOpMode();
+    setChannel();
+    displayWepRadio();
+    wdsGray5gSecurity();
+    for (i=0; i<fm.w_channel.options.length; i++)
+    {
+        if (fm.w_channel.options[i].value == fm.initChannel.value)
+        {
+            fm.w_channel[i].selected = true;
+            break;
+        }
+    }
+    for (i=0; i<fm.w_channel_an.options.length; i++)
+    {
+        if (fm.w_channel_an.options[i].value == fm.initChannel_an.value)
+        {
+            fm.w_channel_an[i].selected = true;
+            curr_channel_an_index = i;
+            curr_channel_an_value = fm.w_channel_an.options[i].value;
+            break;
+        }
+    }
+    for (i=0; i<fm.w_channel_an_2.options.length; i++)
+    {
+        if (fm.w_channel_an_2.options[i].value == fm.initChannel_an_2.value)
+        {
+            fm.w_channel_an_2[i].selected = true;
+            curr_channel_an_2_index = i;
+            curr_channel_an_2_value = fm.w_channel_an_2.options[i].value;
+            break;
+        }
+    }
+     
+    if (sec_type_2G == "WEP")
+    {
+        fm.security_type[1].checked = true;
+        document.getElementById("wep_2G").style.display="block";
+        for (i=0; i<fm.authAlgm.length; i++)
+        {
+            if (fm.authAlgm[i].value == fm.initAuthType.value)
+            {
+                fm.authAlgm[i].selected = true;
+                break;
+            }
+        }
+        
+        defaultKey = parseInt(fm.initDefaultKey.value);
+        if ( defaultKey >= 0 && defaultKey <= 3)
+            document.forms[0].wep_key_no[defaultKey].checked = true;
+        else
+            document.forms[0].wep_key_no[0].checked = true;
+    }
+    else if(sec_type_2G == "WPA-PSK" || sec_type_2G == "WPA2-PSK" || sec_type_2G == "WPA-AUTO-PSK")
+    {
+        document.getElementById("wpa_2G").style.display="block";
+        if (sec_type_2G == "WPA-PSK")
+        {
+            fm.security_type[2].checked = true;
+        }
+        else if (sec_type_2G == "WPA2-PSK")
+        {
+            fm.security_type[3].checked = true;
+        }
+        else if (sec_type_2G == "WPA-AUTO-PSK")
+        {
+            fm.security_type[4].checked = true;
+        }
+    }
+    else if(sec_type_2G == "WPA-ENTERPRISE" ) /* enterprise */
+    {
+        var radius_wla_ipaddr_tmp = fm.wla_radius_ipaddr.value.split(".");
+        var en_type_2G = fm.wla_ent_secu_type.value;
+        
+        document.getElementById("wpa_en_2G").style.display="block";
+        fm.security_type[5].checked = true;
+   
+        fm.RADIUSAddr1_wla.value = radius_wla_ipaddr_tmp[0];
+        fm.RADIUSAddr2_wla.value = radius_wla_ipaddr_tmp[1];
+        fm.RADIUSAddr3_wla.value = radius_wla_ipaddr_tmp[2];
+        fm.RADIUSAddr4_wla.value = radius_wla_ipaddr_tmp[3];
+
+
+        if (en_type_2G == "WPA2")
+        {
+            fm.encryptmode.selectedIndex = 0;
+        }
+        else
+        {
+            fm.encryptmode.selectedIndex = 1;
+        }
+    }    
+    else
+    {
+        fm.security_type[0].checked = true;
+    }
+    
+    if (sec_type_5G == "WEP")
+    {
+        fm.security_type_an[1].checked = true;
+        document.getElementById("wep_5G").style.display="block";
+        for (i=0; i<fm.authAlgm_an.length; i++)
+        {
+            if (fm.authAlgm_an[i].value == fm.initAuthType_an.value)
+            {
+                fm.authAlgm_an[i].selected = true;
+                break;
+            }
+        }
+        
+        defaultKey = parseInt(fm.initDefaultKey_an.value);
+        if ( defaultKey >= 0 && defaultKey <= 3)
+            document.forms[0].wep_key_no_an[defaultKey].checked = true;
+        else
+            document.forms[0].wep_key_no_an[0].checked = true;
+    }
+    else if(sec_type_5G == "WPA-PSK" || sec_type_5G == "WPA2-PSK" || sec_type_5G == "WPA-AUTO-PSK")
+    {
+        document.getElementById("wpa_5G").style.display="block";
+        if (sec_type_5G == "WPA-PSK")
+        {
+            fm.security_type_an[2].checked = true;
+        }
+        else if (sec_type_5G == "WPA2-PSK")
+        {
+            fm.security_type_an[3].checked = true;
+        }
+        else if (sec_type_5G == "WPA-AUTO-PSK")
+        {
+            fm.security_type_an[4].checked = true;
+        }
+    }
+    else if(sec_type_5G == "WPA-ENTERPRISE") /* enterprise */
+    {
+        var radius_wlg_ipaddr_tmp = fm.wlg_radius_ipaddr.value.split(".");
+        var en_type_5G = fm.wlg_ent_secu_type.value;
+        document.getElementById("wpa_en_5G").style.display="block";
+        fm.security_type_an[5].checked = true;
+        
+        fm.RADIUSAddr1_wlg.value = radius_wlg_ipaddr_tmp[0];
+        fm.RADIUSAddr2_wlg.value = radius_wlg_ipaddr_tmp[1];
+        fm.RADIUSAddr3_wlg.value = radius_wlg_ipaddr_tmp[2];
+        fm.RADIUSAddr4_wlg.value = radius_wlg_ipaddr_tmp[3];
+
+        if (en_type_5G == "WPA2")
+        {
+            fm.encryptmode_an.selectedIndex = 0;
+        }
+        else 
+        {
+            fm.encryptmode_an.selectedIndex = 1;
+        }
+    }        
+    else
+    {
+        fm.security_type_an[0].checked = true;
+    }
+ 
+
+    if(showDual5GBand)
+    {   
+
+        if(fm.enable_5g_band_steering.checked == true)
+        {
+            show5G_2(1);
+            disable5G_2Setting();
+        }
+        else
+        {
+            show5G_2(0);
+            enable5G_2Setting();
+        }
+   }
+   else
+   {
+       document.getElementById("setting_5G_2").style.display="none";
+       document.getElementById("wep_5G_2").style.display="none";
+       document.getElementById("wpa_5G_2").style.display="none";
+       document.getElementById("wpa_en_5G_2").style.display="none";
+       document.getElementById("band_steering_checkbox").style.display="none";
+
+   }
+   
+   if (fm.support_ac_mode.value == "1")
+   {
+        document.getElementById("wpa_radio_5g").style.display = "none";
+        document.getElementById("wpa_radio_5g_2").style.display = "none";
+   }
+    fm.init_opmode_an_2.value = fm.opmode_an_2.selectedIndex.toString();
+    initialized=true;
+
+}
+
+
+function wpaKeyUpdate()
+{
+    var cf=document.forms[0];
+    if(cf.enable_5g_band_steering.checked == true && showDual5GBand)
+        cf.passphrase_an_2.value=cf.passphrase_an.value;
+}
+
+function ssidUpdate()
+{
+    var cf=document.forms[0];
+    if(cf.enable_5g_band_steering.checked == true && showDual5GBand)
+        cf.ssid_an_2.value=cf.ssid_an.value;
+}
+
+function wepKeySelect(keyNumber)
+{
+    var cf=document.forms[0];
+    cf.wep_key_no_an_2.value=cf.wep_key_no_an.value;
+}
+
+function wpaKeyChange(keyNumber)
+{
+    var cf=document.forms[0];
+
+    if(cf.enable_5g_band_steering.check ==true && showDual5GBand)
+    {
+        if(keyNumber==0)
+            cf.KEY1_an_2.value=cf.KEY1_an.value;
+        else if(keyNumber==1)
+            cf.KEY2_an_2.value=cf.KEY2_an.value;
+        else if(keyNumber==2)
+            cf.KEY3_an_2.value=cf.KEY3_an.value;
+        else if(keyNumber==3)
+            cf.KEY4_an_2.value=cf.KEY3_an.value;
+    }
+}
+
+
+function enable5G_2Setting()
+{
+    var fm=document.forms[0];
+    fm.ssid_bc_an_2.disabled=false;
+    fm.ssid_an_2.disabled=false;
+    fm.opmode_an_2.disabled=false;
+    fm.security_type_an_2[0].disabled=false;
+    fm.security_type_an_2[1].disabled=false;
+    fm.security_type_an_2[2].disabled=false;
+    fm.security_type_an_2[3].disabled=false;
+    fm.security_type_an_2[4].disabled=false;
+    fm.security_type_an_2[5].disabled=false;
+    fm.authAlgm_an_2.disabled=false;
+    fm.wepenc_an_2.disabled=false;
+    fm.wep_key_no_an_2.disabled=false;
+    fm.passphrase_an_2.disabled=false;
+    fm.encryptmode_an_2.disabled=false;
+    fm.wpa_en_gk_int_wlh.disabled=false;
+    fm.RADIUSAddr1_wlh.disabled=false;
+    fm.RADIUSAddr2_wlh.disabled=false;
+    fm.RADIUSAddr3_wlh.disabled=false;
+    fm.RADIUSAddr4_wlh.disabled=false;
+    fm.wpa_en_radius_port_wlh.disabled=false;
+    fm.wpa_en_radius_ss_wlh.disabled=false;
+}
+    
+function disable5G_2Setting()
+{
+    var fm=document.forms[0];
+
+    if(!showDual5GBand)
+        return;
+    fm.ssid_bc_an_2.disabled=true;
+    fm.ssid_an_2.disabled=true;
+    fm.opmode_an_2.disabled=true;
+    fm.security_type_an_2[0].disabled=true;
+    fm.security_type_an_2[1].disabled=true;
+    fm.security_type_an_2[2].disabled=true;
+    fm.security_type_an_2[3].disabled=true;
+    fm.security_type_an_2[4].disabled=true;
+    fm.security_type_an_2[5].disabled=true;
+    fm.authAlgm_an_2.disabled=true;
+    fm.wepenc_an_2.disabled=true;
+    fm.wep_key_no_an_2.disabled=true;
+    fm.passphrase_an_2.disabled=true;
+    fm.encryptmode_an_2.disabled=true;
+    fm.wpa_en_gk_int_wlh.disabled=true;
+    fm.RADIUSAddr1_wlh.disabled=true;
+    fm.RADIUSAddr2_wlh.disabled=true;
+    fm.RADIUSAddr3_wlh.disabled=true;
+    fm.RADIUSAddr4_wlh.disabled=true;
+    fm.wpa_en_radius_port_wlh.disabled=true;
+    fm.wpa_en_radius_ss_wlh.disabled=true;
+}
+
+function show5G_2(band_steering_enable)
+{
+
+    var fm=document.forms[0];
+    var sec_type_5G_2 = fm.init_security_type_5G_2.value;
+
+    if(!showDual5GBand)
+        return;
+
+    if(band_steering_enable)
+    {
+        fm.ssid_bc_an_2.checked=fm.ssid_bc_an.checked
+        fm.ssid_an_2.value=fm.ssid_an.value;
+        fm.security_type_an_2.selectedIndex=fm.security_type_an.selectedIndex;
+        fm.authAlgm_an_2.selectedIndex=fm.authAlgm_an.selectedIndex;
+        fm.wepenc_an_2.selectedIndex=fm.wepenc_an.selectedIndex;
+        fm.wep_key_no_an_2.value=fm.wep_key_no_an.value;
+        fm.passphrase_an_2.value=fm.passphrase_an.value;
+        fm.encryptmode_an_2.selectedIndex=fm.encryptmode_an.selectedIndex;
+        fm.RADIUSAddr1_wlh.value=fm.RADIUSAddr1_wlg.value;
+        fm.RADIUSAddr2_wlh.value=fm.RADIUSAddr2_wlg.value;
+        fm.RADIUSAddr3_wlh.value=fm.RADIUSAddr3_wlg.value;
+        fm.RADIUSAddr4_wlh.value=fm.RADIUSAddr4_wlg.value;
+        fm.wpa_en_radius_port_wlh.value=fm.wpa_en_radius_port_wlg.value;
+        fm.wpa_en_radius_ss_wlh.selectedIndex=fm.wpa_en_radius_ss_wlg.selectedIndex;
+        fm.wpa_en_radius_ss_wlh.value=fm.wpa_en_radius_ss_wlg.value;
+        fm.wpa_en_gk_int_wlh.value=fm.wpa_en_gk_int_wlg.value;
+        if (fm.security_type_an[1].checked == true)
+        {
+            
+            fm.security_type_an_2[1].checked = true;
+            document.getElementById("wep_5G_2").style.display="block";
+            document.getElementById("wpa_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="none";
+          
+        }
+        else if(fm.security_type_an[2].checked == true || 
+                fm.security_type_an[3].checked == true || 
+                fm.security_type_an[4].checked == true)
+        {
+        	  if(fm.security_type_an[2].checked == true)
+                fm.security_type_an_2[2].checked = true;
+        	  else if(fm.security_type_an[3].checked == true)
+                fm.security_type_an_2[3].checked = true;
+        	  else if(fm.security_type_an[4].checked == true)
+                fm.security_type_an_2[4].checked = true;
+                
+            document.getElementById("wep_5G_2").style.display="none";
+            document.getElementById("wpa_5G_2").style.display="block";
+            document.getElementById("wpa_en_5G_2").style.display="none";
+        }
+        else if(fm.security_type_an[5].checked == true) /* enterprise */
+        {
+            fm.security_type_an_2[5].checked = true;
+            document.getElementById("wep_5G_2").style.display="none";
+            document.getElementById("wpa_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="block";
+        }        
+        else
+        {
+            fm.security_type_an_2[0].checked = true;
+            document.getElementById("wep_5G_2").style.display="none";
+            document.getElementById("wpa_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="none";
+        }
+    
+        if (fm.support_ac_mode.value == "1")    
+        {
+            document.getElementById("wpa_radio_5g").style.display = "none";
+            document.getElementById("wpa_radio_5g_2").style.display = "none";
+        }
+    
+        fm.security_type_an_2[0].disabled=true;
+        fm.security_type_an_2[1].disabled=true;
+        fm.security_type_an_2[2].disabled=true;
+        fm.security_type_an_2[3].disabled=true;
+        fm.security_type_an_2[4].disabled=true;
+        fm.security_type_an_2[5].disabled=true;
+		fm.opmode_an_2.selectedIndex = fm.opmode_an.selectedIndex;
+    }
+    else
+    {
+         fm.ssid_an_2.value=fm.init_ssid_5G_2.value;
+         fm.passphrase_an_2.value=fm.init_passhprase_5G_2.value;
+        if (fm.init_security_type_5G_2.value == "WEP")
+        {
+            fm.security_type_an_2[1].checked = true;
+            document.getElementById("wep_5G_2").style.display="block";
+            for (i=0; i<fm.authAlgm_an.length; i++)
+            {
+                if (fm.authAlgm_an_2[i].value == fm.initAuthType_an_2.value)
+                {
+                    fm.authAlgm_an_2[i].selected = true;
+                    break;
+                }
+            }
+          
+            defaultKey = parseInt(fm.initDefaultKey_an.value);
+            if ( defaultKey >= 0 && defaultKey <= 3)
+                document.forms[0].wep_key_no_an_2[defaultKey].checked = true;
+            else
+                document.forms[0].wep_key_no_an_2[0].checked = true;
+                
+            document.getElementById("wep_5G_2").style.display="block";
+            document.getElementById("wpa_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="none";
+        }
+        else if(fm.init_security_type_5G_2.value == "WPA-PSK" || fm.init_security_type_5G_2.value == "WPA2-PSK" || fm.init_security_type_5G_2.value == "WPA-AUTO-PSK")
+        {
+            document.getElementById("wpa_5G_2").style.display="block";
+            if (sec_type_5G_2 == "WPA-PSK")
+            {
+                fm.security_type_an_2[2].checked = true;
+            }
+            else if (sec_type_5G_2 == "WPA2-PSK")
+            {
+                fm.security_type_an_2[3].checked = true;
+            }
+            else if (sec_type_5G_2 == "WPA-AUTO-PSK")
+            {
+                fm.security_type_an_2[4].checked = true;
+            }
+            document.getElementById("wep_5G_2").style.display="none";
+            document.getElementById("wpa_5G_2").style.display="block";
+            document.getElementById("wpa_en_5G_2").style.display="none";
+        }
+        else if(fm.init_security_type_5G_2.value == "WPA-ENTERPRISE") /* enterprise */
+        {
+            var radius_wlh_ipaddr_tmp = fm.wlh_radius_ipaddr.value.split(".");
+            var en_type_5G_2 = fm.wlh_ent_secu_type.value;
+            document.getElementById("wpa_en_5G_2").style.display="block";
+            fm.security_type_an_2[5].checked = true;
+        
+            fm.RADIUSAddr1_wlh.value = radius_wlh_ipaddr_tmp[0];
+            fm.RADIUSAddr2_wlh.value = radius_wlh_ipaddr_tmp[1];
+            fm.RADIUSAddr3_wlh.value = radius_wlh_ipaddr_tmp[2];
+            fm.RADIUSAddr4_wlh.value = radius_wlh_ipaddr_tmp[3];
+
+            fm.wpa_en_radius_port_wlh.value=fm.wlh_ent_secu_port.value;
+            fm.wpa_en_radius_ss_wlh.value=fm.wlh_radius_secret.value;
+            fm.wpa_en_gk_int_wlh.value=fm.wlh_ent_secu_interval.value;
+
+            if (en_type_5G_2 == "WPA2")
+            {
+                fm.encryptmode_an_2.selectedIndex = 0;
+            }
+            else 
+            {
+                fm.encryptmode_an_2.selectedIndex = 1;
+            }
+            document.getElementById("wep_5G_2").style.display="none";
+            document.getElementById("wpa_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="block";
+        }        
+        else
+        {
+            fm.security_type_an_2[0].checked = true;
+            document.getElementById("wep_5G_2").style.display="none";
+            document.getElementById("wpa_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="none";
+        }
+    
+        if (fm.support_ac_mode.value == "1")    
+        {
+            document.getElementById("wpa_radio_5g").style.display = "none";
+            document.getElementById("wpa_radio_5g_2").style.display = "none";
+        }
+    }
+}
+function check5G_1and2setting()
+{ 
+    var cf = document.forms[0];
+    if(cf.opmode_an.selectedIndex==cf.opmode_an_2.selectedIndex){
+    return 1;
+    }
+    if(cf.ssid_an.value==cf.ssid_an_2.value){
+    return 1;
+    }
+    for (i=0; i<cf.security_type_an.length; i++)
+    {
+        if (cf.security_type_an[i].checked && cf.security_type_an_2[i].checked)
+        return 1;
+    }
+	return 0;
+}
+
+function bandSteeringUpdate()
+{
+    var cf = document.forms[0];
+    
+    if(cf.enable_5g_band_steering.checked == true && showDual5GBand)
+    {
+        disable5G_2Setting();
+        show5G_2(1);
+  		  if(check5G_1and2setting()){ //for 5G Radio-One and 5G Radio-Two are different
+            alert("<%19%>");
+
+		    }
+    }
+    else
+    {
+        if (cf.init_ssid_bc_an_2.value=="checked")
+            cf.ssid_bc_an_2.checked = true;
+        else
+            cf.ssid_bc_an_2.checked = false;
+        cf.opmode_an_2.selectedIndex = parseInt(cf.init_opmode_an_2.value);
+        enable5G_2Setting();
+        show5G_2(0);
+    }
+}
+
+function ssid5Gchange()
+{
+    var cf = document.forms[0];
+
+    if(cf.enable_5g_band_steering.check ==true && showDual5GBand)
+        cf.ssid_an_2.value=cf.ssid_an.value;
+
+}
+
+function chgCh(from)
+{
+    var cf = document.forms[0];
+    var index = cf.WRegion.selectedIndex;
+    if(from==1)
+    {
+//        if( index == 1 || index==6 || index == 8 ||  index==9 || index==13 || index==14 || index==15 || index==17 || index==18)
+        if(0)
+        {
+            showDual5GBand=0;
+            document.getElementById("setting_5G_2").style.display="none";
+            document.getElementById("wep_5G_2").style.display="none";
+            document.getElementById("wpa_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="none";
+            document.getElementById("band_steering_checkbox").style.display="none";
+            if(cf.enable_5g_band_steering.checked == true)
+            {
+                show5G_2(1);
+                disable5G_2Setting();
+            }
+            else
+            {
+                show5G_2(0);
+                enable5G_2Setting();
+            }
+    
+        }
+        else
+        {
+            showDual5GBand=1;
+            document.getElementById("setting_5G_2").style.display="block";
+            document.getElementById("wep_5G_2").style.display="block";
+            document.getElementById("wpa_5G_2").style.display="block";
+            document.getElementById("wpa_en_5G_2").style.display="block";
+            document.getElementById("band_steering_checkbox").style.display="block";
+            if(cf.enable_5g_band_steering.checked == true)
+            {
+                show5G_2(1);
+                disable5G_2Setting();
+            }
+            else
+            {
+                show5G_2(0);
+                enable5G_2Setting();
+            }
+        }
+    }
+    if ( from >= 2 )
+    {
+        /* Walk-around: chgCh() would be called twice (reason unknown), 
+           only allow 1st call to be excuted on (WPA-PSK [TKIP] + WPA2-PSK [AES]).
+         */
+        cf.only_mode.value = "1";
+        setOpMode();
+        setChannel();
+        if(from==4)
+            securityCheck(2);
+        else if(from==3)
+            securityCheck(1);
+        else
+            securityCheck(0);
+        displayWepRadio();
+        //cf.submit();
+        if(cf.enable_5g_band_steering.checked == true)
+        {
+            show5G_2(1);
+            disable5G_2Setting();
+        }
+        else
+        {
+            //show5G_2(0);
+            enable5G_2Setting();
+        }
+    }
+    else
+    {
+
+        setOpMode();
+        setChannel();
+        wdsGray5gSecurity();
+    }
+}
+
+function checkRegion()
+{
+    var cf = document.forms[0];
+    if(cf.WRegion.selectedIndex == 0)
+    {
+        cf.WRegion.focus();
+        return alertR("<%20%>");
+    }
+    if (notShown)
+        notShown = false;
+    else if(cf.WRegion.selectedIndex != initRegion && notShown)
+    {
+        if(!confirm(changeMsg))
+            return false;
+        else notShown = false;
+    }
+    return true;
+}
+
+function displayWepRadio()
+{
+    var cf = document.forms[0];
+	var currentMode = cf.opmode.selectedIndex;
+    var currentMode_an = cf.opmode_an.selectedIndex;
+    var currentMode_an_2 = cf.opmode_an_2.selectedIndex;
+    //var sec_type_2G = cf.security_type_2G.value;
+    //var sec_type_5G = cf.security_type_5G.value;
+    
+    if (currentMode == 0)//Up to 54Mbps
+    {
+        document.getElementById("wep_radio_2G").style.display="block";
+        document.getElementById("wpa_radio_2G").style.display="none";
+        
+    }
+    else
+    {
+        document.getElementById("wep_radio_2G").style.display="none";
+        document.getElementById("wpa_radio_2G").style.display="none";
+    }
+    
+    if (currentMode_an == 0)//Up to 54Mbps
+    {
+        if (cf.support_ac_mode.value == "1")
+            document.getElementById("wep_radio_5G").style.display="none";
+        else
+            document.getElementById("wep_radio_5G").style.display="block";
+    }
+    else
+    {
+        document.getElementById("wep_radio_5G").style.display="none";
+    }
+    
+    if (currentMode_an_2 == 0)//Up to 54Mbps
+    {
+        if (cf.support_ac_mode.value == "1")
+            document.getElementById("wep_radio_5G_2").style.display="none";
+        else
+            document.getElementById("wep_radio_5G_2").style.display="block";
+    }
+    else
+    {
+        document.getElementById("wep_radio_5G_2").style.display="none";
+    }
+}
+
+
+function setOpMode()
+{
+    var cf = document.forms[0];
+    var currentMode = cf.opmode.selectedIndex;
+    var currentMode_an = cf.opmode_an.selectedIndex;
+    var currentMode_an_2 = cf.opmode_an_2.selectedIndex;
+    
+    var sec_type_2G = cf.security_type_2G.value;
+    var sec_type_5G = cf.security_type_5G.value;
+    var sec_type_5G_2 = cf.security_type_5G_2.value;
+    
+    var index = cf.WRegion.selectedIndex;
+    var selectedRegionText = cf.WRegion.options[cf.WRegion.selectedIndex].text;
+
+    if (sec_type_2G == "WEP")
+    {
+    	cf.opmode.options.length = 1;
+    	cf.opmode.options[0].text = OpMode_BG_TEXT;
+    	cf.opmode.options[0].value = OpMode_BG_VALUE;                     
+    	//cf.opmode.selectedIndex = currentMode;                      
+    }                          
+    else
+    {
+    	cf.opmode.options.length = 3;
+    	cf.opmode.options[0].text = OpMode_BG_TEXT;
+    	cf.opmode.options[1].text = OpMode_20M_TEXT;
+    	cf.opmode.options[2].text = OpMode_40M_TEXT;
+    	cf.opmode.options[0].value = OpMode_BG_VALUE;
+    	cf.opmode.options[1].value = OpMode_20M_VALUE;
+    	cf.opmode.options[2].value = OpMode_40M_VALUE;
+    	cf.opmode.selectedIndex = currentMode;
+    }
+    
+    if (sec_type_5G == "WEP")
+    {
+    	cf.opmode_an.options.length = 1;
+    	cf.opmode_an.options[0].text = OpMode_5G_BG_TEXT;
+    	cf.opmode_an.options[0].value = OpMode_5G_BG_VALUE;
+    	//cf.opmode.selectedIndex = currentMode;
+    }
+    else
+    {
+        /* Africa, Israel, Middle East(Algeria/Syria/Yemen), Middle East(Turkey/Egypt/Tunisia/Kuwait), 
+        Middle East(Saudi Arabia) not support 40M */
+//        if(index == 1 || index == 8 || index == 15 || index == 16 )
+        if(selectedRegionText == "<%21%>")
+        {
+            cf.opmode_an.options.length = 1;
+            cf.opmode_an.options[0].text = OpMode_5G_BG_TEXT;
+            cf.opmode_an.options[0].value = OpMode_5G_BG_VALUE;
+            currentMode_an=0;
+        }
+//        else if(index == 18)
+        else if(0)
+        {
+            cf.opmode_an.options.length = 2;
+            cf.opmode_an.options[0].text = OpMode_5G_BG_TEXT;
+            cf.opmode_an.options[1].text = OpMode_5G_20M_TEXT;
+            cf.opmode_an.options[0].value = OpMode_5G_BG_VALUE;
+            cf.opmode_an.options[1].value = OpMode_5G_20M_VALUE;
+            currentMode_an=1;
+        }
+        
+        else
+        {
+            cf.opmode_an.options.length = 3;
+            cf.opmode_an.options[0].text = OpMode_5G_BG_TEXT;
+            cf.opmode_an.options[1].text = OpMode_5G_20M_TEXT;
+            cf.opmode_an.options[2].text = OpMode_5G_40M_TEXT;
+            cf.opmode_an.options[0].value = OpMode_5G_BG_VALUE;
+            cf.opmode_an.options[1].value = OpMode_5G_20M_VALUE;
+            cf.opmode_an.options[2].value = OpMode_5G_40M_VALUE;
+        }
+        
+        cf.opmode_an.selectedIndex = currentMode_an;
+        /* 20120821: Russia region currently not support 11ac HT80 */
+        if (cf.support_ac_mode.value == "1" && cf.WRegion.value == 14)
+        {
+            if (cf.opmode_an.selectedIndex == 2)
+                cf.opmode_an.selectedIndex = 1;
+            cf.opmode_an.options.length = 2;
+        }
+    }
+
+    if (sec_type_5G_2 == "WEP")
+    {
+    	cf.opmode_an_2.options.length = 1;
+    	cf.opmode_an_2.options[0].text = OpMode_5G_BG_TEXT;
+    	cf.opmode_an_2.options[0].value = OpMode_5G_BG_VALUE;
+    	//cf.opmode.selectedIndex = currentMode;
+    }
+    else
+    {
+        /* Africa, Israel, Middle East(Algeria/Syria/Yemen), Middle East(Turkey/Egypt/Tunisia/Kuwait), 
+        Middle East(Saudi Arabia) not support 40M */
+//        if(index == 1 || index == 8 || index == 15 || index == 16 )
+        if(selectedRegionText == "<%21%>")
+        {
+            cf.opmode_an_2.options.length = 1;
+            cf.opmode_an_2.options[0].text = OpMode_5G_BG_TEXT;
+            cf.opmode_an_2.options[0].value = OpMode_5G_BG_VALUE;
+            currentMode_an_2=0;
+        }
+        else
+        {
+            cf.opmode_an_2.options.length = 3;
+            cf.opmode_an_2.options[0].text = OpMode_5G_BG_TEXT;
+            cf.opmode_an_2.options[1].text = OpMode_5G_20M_TEXT;
+            cf.opmode_an_2.options[2].text = OpMode_5G_40M_TEXT;
+            cf.opmode_an_2.options[0].value = OpMode_5G_BG_VALUE;
+            cf.opmode_an_2.options[1].value = OpMode_5G_20M_VALUE;
+            cf.opmode_an_2.options[2].value = OpMode_5G_40M_VALUE;
+        }
+        
+        cf.opmode_an_2.selectedIndex = currentMode_an_2;
+        /* 20120821: Russia region currently not support 11ac HT80 */
+        if (cf.support_ac_mode.value == "1" && cf.WRegion.value == 14)
+        {
+            if (cf.opmode_an_2.selectedIndex == 2)
+                cf.opmode_an_2.selectedIndex = 1;
+            cf.opmode_an_2.options.length = 2;
+        }
+    }
+
+    wdsGray5gSecurity();
+    return;
+}
+
+function setChannel() 
+{
+    var cf = document.forms[0];
+    var index = cf.WRegion.selectedIndex;
+    var chIndex = cf.w_channel.selectedIndex;
+    var selectedRegionText = cf.WRegion.options[cf.WRegion.selectedIndex].text;
+    //var currentMode = cf.opmode.selectedIndex;
+    //var chIndex_an = cf.w_channel_an.selectedIndex;
+    //var currentMode_an = cf.opmode_an.selectedIndex;
+    var currChVal_an = "<%17%>";
+    var currChVal_an_2 = "<%18%>";
+    var i=0, chMatch_an=0,chMatch_an_2=0;
+    var b0=0, b1=0, b2=0, b3=0, b4=0;  
+	var wlaRegion = "<%16%>";
+    var sku = "<%22%>";
+	
+    /* 2G part start */
+    var sku_name = cf.fw_sku.value;
+    
+    if (sku_name == "SKU_WW")
+    {
+        if (FinishChannel[index]==14 && cf.opmode.selectedIndex!=0)
+            cf.w_channel.options.length = FinishChannel[index] - StartChannel[index] + 1;
+        else
+            cf.w_channel.options.length = FinishChannel[index] - StartChannel[index] + 2;
+    }
+    else
+    {
+	    index=0;
+        cf.w_channel.options.length = FinishChannel[index] - StartChannel[index]+2;
+    }
+
+    cf.w_channel.options[0].text = "<%23%>";
+    cf.w_channel.options[0].value = 0;
+    
+    for (var i = StartChannel[index]; i <= FinishChannel[index]; i++) {
+        if (i==14 && cf.opmode.selectedIndex!=0)
+            continue;
+        cf.w_channel.options[i - StartChannel[index] + 1].value = i;
+        cf.w_channel.options[i - StartChannel[index] + 1].text = ((i < 10)? "0" + i : i);
+    }
+    cf.w_channel.selectedIndex = ((chIndex > -1) && (chIndex < cf.w_channel.options.length)) ? chIndex : 0 ;
+    /* 2G part end */
+    
+    
+//    if(index == 13) /* Middle East(Algeria/Syria/Yemen) not support 5G */
+    if(0) /* Middle East(Algeria/Syria/Yemen) not support 5G */
+    {
+        //cf.enable_isolation_an.disabled = true;   
+        cf.ssid_bc_an.disabled = true;
+        cf.ssid_an.disabled = true;
+        cf.w_channel_an.disabled = true;
+        cf.opmode_an.disabled = true;
+        cf.ssid_bc_an_2.disabled = true;
+        cf.ssid_an_2.disabled = true;
+        cf.w_channel_an_2.disabled = true;
+        cf.opmode_an_2.disabled = true;
+		Security5G_disabled();
+		return;
+    }    
+    else
+    {
+        cf.ssid_bc_an.disabled = false;
+        cf.ssid_an.disabled = false;
+        cf.w_channel_an.disabled = false;
+        cf.opmode_an.disabled = false;
+        cf.ssid_bc_an_2.disabled = false;
+        cf.ssid_an_2.disabled = false;
+        cf.w_channel_an_2.disabled = false;
+        cf.opmode_an_2.disabled = false;
+		Security5G_enabled();
+    }        
+    
+    /* Africa, Israel, Middle East(Algeria/Syria/Yemen), Middle East(Turkey/Egypt/Tunisia/Kuwait), 
+       Middle East(Saudi Arabia) not support 40M */
+    if(selectedRegionText == "<%21%>")
+    {
+        cf.opmode_an.length = 1;
+        cf.opmode_an_2.length = 1;
+    }
+    else 
+    {
+        cf.opmode_an.length = 3;   
+        cf.opmode_an_2.length = 3;   
+    }
+       
+    if (curr_region != cf.WRegion.value)
+    {
+        // No band 4 channels for Africa, Europe, Israel, Japan, Middel East(Turkey/Tunisia/Kuwait), Middel East(United Arab Emirates) 
+//        if (index == 1 || index == 6 || index == 8 || index==9 || index==15 || index==17)
+        if (0)
+        {
+            var sku_name = cf.fw_sku.value;
+            if (sku_name == "SKU_WW")
+            {
+                currChVal_an = 44;
+            }
+            else
+            {
+                currChVal_an = 153;
+            }
+        }
+        else
+        {
+            currChVal_an = 0;
+        }
+    }
+
+//    if ((cf.auto_channel_5G.value == "1") && (index != 1 && index != 6 && index != 8 && index != 9 
+//        && index != 15 && index != 17))		/// No band 4 channels for Africa, Europe, Israel, Japan, Middel East(Turkey/Tunisia/Kuwait), Middel East(United Arab Emirates) 
+ if (cf.auto_channel_5G.value == "1")		/// No band 4 channels for Africa, Europe, Israel, Japan, Middel East(Turkey/Tunisia/Kuwait), Middel East(United Arab Emirates) 
+    {
+//        cf.w_channel_an.options[0].text = "<%23%>";
+//        cf.w_channel_an.options[0].value = 0;
+//        cf.w_channel_an_2.options[0].text = "<%23%>";
+//        cf.w_channel_an_2.options[0].value = 0;
+//        b0 = 1;
+    }
+    
+    if (cf.support_ac_mode.value == "1" && cf.opmode_an.selectedIndex == 2)
+    {
+        /* No "auto" channel for 11ac HT80 */
+        b0 = 0;
+    }
+    
+    // Handle 5G radio 1(band 1/2)
+    cf.w_channel_an.options.length=100;
+   
+    if (cf.opmode_an.selectedIndex == 2)	// 80MHz
+    {
+        // Add band 1 channels
+        for (b1=0; b1<Band1Channel_80M.length; b1++)
+        {
+            cf.w_channel_an.options[b0+b1].text = Band1Channel_80M[b1];
+            cf.w_channel_an.options[b0+b1].value = Band1Channel_80M[b1];
+        }
+        // Add band 2 channels
+        if (cf.ce_dfs_ch_enable.value == "1")
+        {
+            if(selectedRegionText == "<%24%>")
+            {
+                for (b2=0; b2<Band2Channel_80M.length; b2++)
+                {
+                    cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_80M[b2]+dfs_note;
+                    cf.w_channel_an.options[b0+b1+b2].value = Band2Channel_80M[b2];
+                }
+            }
+        }
+        if (cf.telec_dfs_ch_enable.value == "1")
+        {
+            if(selectedRegionText == "<%25%>")
+            {
+                for (b2=0; b2<Band2Channel_80M.length; b2++)
+                {
+                    cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_80M[b2]+dfs_note;
+                    cf.w_channel_an.options[b0+b1+b2].value = Band2Channel_80M[b2];
+                }
+            }
+        }
+        
+        cf.w_channel_an.options.length = b0+b1+b2;
+        
+    }
+    else if (cf.opmode_an.selectedIndex == 1)	// 40MHz
+    {
+        cf.w_channel_an.options.length = 100;
+        
+        // Add band 1 channels
+        for (b1=0; b1<Band1Channel_40M.length; b1++)
+        {
+            cf.w_channel_an.options[b0+b1].text = Band1Channel_40M[b1];
+            cf.w_channel_an.options[b0+b1].value = Band1Channel_40M[b1];
+        }
+
+        // Add band 2 channels
+        if (cf.ce_dfs_ch_enable.value == "1")
+        {
+            if(selectedRegionText == "<%24%>")
+            {
+                for (b2=0; b2<Band2Channel_40M.length; b2++)
+                {
+                    cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_40M[b2]+dfs_note;
+                    cf.w_channel_an.options[b0+b1+b2].value = Band2Channel_40M[b2];
+                }
+            }
+        }
+        if (cf.telec_dfs_ch_enable.value == "1")
+        {
+            if(selectedRegionText == "<%25%>")
+            {
+                for (b2=0; b2<Band2Channel_40M.length; b2++)
+                {
+                    cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_40M[b2]+dfs_note;
+                    cf.w_channel_an.options[b0+b1+b2].value = Band2Channel_40M[b2];
+                }
+            }
+        }
+    }
+    else /* 20M */
+    {
+        cf.w_channel_an.options.length = 100;
+        
+        // Add band 1 channels
+        for (b1=0; b1<Band1Channel_20M.length; b1++)
+        {
+            cf.w_channel_an.options[b0+b1].text = Band1Channel_20M[b1];
+            cf.w_channel_an.options[b0+b1].value = Band1Channel_20M[b1];
+        }
+           
+        // Add band 2 channels
+        if (cf.ce_dfs_ch_enable.value == "1")
+        {
+            if(selectedRegionText == "<%24%>")
+            {
+                for (b2=0; b2<Band2Channel_20M.length; b2++)
+                {
+                    cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_20M[b2]+dfs_note;
+                    cf.w_channel_an.options[b0+b1+b2].value = Band2Channel_20M[b2];
+                }
+            }
+        }
+        if (cf.telec_dfs_ch_enable.value == "1")
+        {
+            if(selectedRegionText == "<%25%>")
+            {
+                for (b2=0; b2<Band2Channel_20M.length; b2++)
+                {
+                    cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_20M[b2]+dfs_note;
+                    cf.w_channel_an.options[b0+b1+b2].value = Band2Channel_20M[b2];
+                }
+            }
+        }
+    }
+    cf.w_channel_an.options.length = b0+b1+b2;
+    
+    // Handle 5G radio 2(band 3/4)
+    cf.w_channel_an_2.options.length=100;
+    
+    if (cf.opmode_an_2.selectedIndex == 2)	// 80MHz
+    {
+        cf.w_channel_an_2.options.length = 100;
+
+        // Add band 3 channels
+        if (cf.ce_dfs_ch_enable.value == "1")
+        {
+            if(selectedRegionText == "<%24%>")
+            {
+                for (b3=0; b3<Band3Channel_CE_80M.length; b3++)
+                {
+                    cf.w_channel_an_2.options[b0+b3].text = Band3Channel_CE_80M[b3]+dfs_note;
+                    cf.w_channel_an_2.options[b0+b3].value = Band3Channel_CE_80M[b3];
+                }
+            }
+        }
+        if (cf.telec_dfs_ch_enable.value == "1")
+        {
+            if(selectedRegionText == "<%25%>")
+            {
+                for (b3=0; b3<Band3Channel_JP_80M.length; b3++)
+                {
+                    cf.w_channel_an_2.options[b0+b3].text = Band3Channel_JP_80M[b3]+dfs_note;
+                    cf.w_channel_an_2.options[b0+b3].value = Band3Channel_JP_80M[b3];
+                }
+            }
+        }
+        // Add band 4 channels
+        
+        if( (selectedRegionText != "<%24%>")
+            && (selectedRegionText != "<%25%>") )
+        {
+            for (b4=0; b4<Band4Channel_80M.length; b4++)
+            {
+                cf.w_channel_an_2.options[b0+b3+b4].text = Band4Channel_80M[b4];
+                cf.w_channel_an_2.options[b0+b3+b4].value = Band4Channel_80M[b4];
+            }
+        }
+    }
+    else if (cf.opmode_an_2.selectedIndex == 1)	// 40MHz
+    {
+        cf.w_channel_an_2.options.length = 100;
+
+        // Add band 3 channels
+        if (cf.ce_dfs_ch_enable.value == "1")
+        {
+            if(selectedRegionText == "<%24%>")
+            {
+                for (b3=0; b3<Band3Channel_CE_40M.length; b3++)
+                {
+                    cf.w_channel_an_2.options[b0+b3].text = Band3Channel_CE_40M[b3]+dfs_note;
+                    cf.w_channel_an_2.options[b0+b3].value = Band3Channel_CE_40M[b3];
+                }
+            }
+        }
+        if (cf.telec_dfs_ch_enable.value == "1")
+        {
+            if(selectedRegionText == "<%25%>")
+            {
+                for (b3=0; b3<Band3Channel_JP_40M.length; b3++)
+                {
+                    cf.w_channel_an_2.options[b0+b3].text = Band3Channel_JP_40M[b3]+dfs_note;
+                    cf.w_channel_an_2.options[b0+b3].value = Band3Channel_JP_40M[b3];
+                }
+            }
+        }
+        // Add band 4 channels
+        
+        if( (selectedRegionText != "<%24%>")
+            && (selectedRegionText != "<%25%>") )
+        {
+            for (b4=0; b4<Band4Channel_40M.length; b4++)
+            {
+                cf.w_channel_an_2.options[b0+b3+b4].text = Band4Channel_40M[b4];
+                cf.w_channel_an_2.options[b0+b3+b4].value = Band4Channel_40M[b4];
+            }
+        }
+    }
+    else // 20MHz
+    {
+        cf.w_channel_an_2.options.length = 100;
+
+        // Add band 3 channels
+        if (cf.ce_dfs_ch_enable.value == "1")
+        {
+            if(selectedRegionText == "<%24%>")
+            {
+                for (b3=0; b3<Band3Channel_CE_20M.length; b3++)
+                {
+                    cf.w_channel_an_2.options[b0+b3].text = Band3Channel_CE_20M[b3]+dfs_note;
+                    cf.w_channel_an_2.options[b0+b3].value = Band3Channel_CE_20M[b3];
+                }
+            }
+        }
+        if (cf.telec_dfs_ch_enable.value == "1")
+        {
+            if(selectedRegionText == "<%25%>")
+            {
+                for (b3=0; b3<Band3Channel_JP_20M.length; b3++)
+                {
+                    cf.w_channel_an_2.options[b0+b3].text = Band3Channel_JP_20M[b3]+dfs_note;
+                    cf.w_channel_an_2.options[b0+b3].value = Band3Channel_JP_20M[b3];
+                }
+            }
+        }
+        // Add band 4 channels
+        
+        if( (selectedRegionText != "<%24%>")
+            && (selectedRegionText != "<%25%>") )
+        {
+            for (b4=0; b4<Band4Channel_20M.length; b4++)
+            {
+                cf.w_channel_an_2.options[b0+b3+b4].text = Band4Channel_20M[b4];
+                cf.w_channel_an_2.options[b0+b3+b4].value = Band4Channel_20M[b4];
+            }
+        }
+    }
+    
+    cf.w_channel_an_2.options.length=b0+b3+b4;
+
+
+    for (i=0; i<cf.w_channel_an.options.length; i++)
+    {
+        if (cf.w_channel_an.options[i].value == currChVal_an)
+        {
+            cf.w_channel_an[i].selected = true;
+            curr_channel_an_index = i;
+            curr_channel_an_value = cf.w_channel_an.options[i].value;
+            chMatch_an = 1;
+            break;
+        }
+    }
+
+    if (!chMatch_an)
+    {
+        // No band 4 channels for Africa, Europe, Israel, Japan, Middel East(Turkey/Tunisia/Kuwait), Middel East(United Arab Emirates) 
+ //       if (index == 1 || index == 6 || index == 8 || index==9 || index==15 || index==17 || index==18)
+        if (0)
+        {
+            var sku_name = cf.fw_sku.value;
+            var defaultChVal_an = 0;
+            /*if (sku_name == "SKU_WW")*/
+                defaultChVal_an = 44;
+            /*else
+                defaultChVal_an = 153;*/
+            for (i=0; i<cf.w_channel_an.options.length; i++)
+            {
+                if (cf.w_channel_an.options[i].value == defaultChVal_an)
+                {
+                    cf.w_channel_an[i].selected = true;
+                    curr_channel_an_index = i;
+                    curr_channel_an_value = cf.w_channel_an.options[i].value;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            cf.w_channel_an[0].selected = true;     //Auto
+            curr_channel_an_index = 0;
+            curr_channel_an_value = cf.w_channel_an.options[0].value;
+        }
+    }
+
+
+//    if (index != 1 && index != 6 && index != 8 && index!=9 && index!=14 && index!=15 && index!=17 && index!=18)
+    if (1)
+    {
+
+        for (i=0; i<cf.w_channel_an_2.options.length; i++)
+        {
+            if (cf.w_channel_an_2.options[i].value == currChVal_an_2)
+            {
+                cf.w_channel_an_2[i].selected = true;
+                curr_channel_an_2_index = i;
+                curr_channel_an_2_value = cf.w_channel_an_2.options[i].value;
+                chMatch_an_2 = 1;
+                break;
+            }
+        }
+
+        if (!chMatch_an_2)
+        {
+            // No band 4 channels for Africa, Europe, Israel, Japan, Middel East(Turkey/Tunisia/Kuwait), Middel East(United Arab Emirates) 
+//            if (index == 1 || index == 6 || index == 8 || index==9 || index==15 || index==17 || index==18)
+            if (0)
+            {
+                var sku_name = cf.fw_sku.value;
+                var defaultChVal_an = 0;
+                defaultChVal_an_2 = 44;
+                for (i=0; i<cf.w_channel_an_2.options.length; i++)
+                {
+                    if (cf.w_channel_an_2.options[i].value == defaultChVal_an_2)
+                    {
+                        cf.w_channel_an_2[i].selected = true;
+                        curr_channel_an_2_index = i;
+                        curr_channel_an_2_value = cf.w_channel_an_2.options[i].value;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                cf.w_channel_an_2[0].selected = true;     //Auto
+                curr_channel_an_2_index = 0;
+                curr_channel_an_2_value = cf.w_channel_an_2.options[0].value;
+            }
+        }
+    }
+
+}
+
+function checkChannel(if_unit)
+{
+    var cf = document.forms[0];
+    var index = cf.WRegion.selectedIndex;
+    var selectedRegionText = cf.WRegion.options[cf.WRegion.selectedIndex].text;
+    var new_channel_an_index;
+    var new_channel_an_value;
+    var new_channel_an_2_index;
+    var new_channel_an_2_value;
+    var wlaRegion = "<%16%>";
+    var i = 0;
+
+    if(if_unit==1)
+    {
+        new_channel_an_index = cf.w_channel_an.selectedIndex;
+        new_channel_an_value = cf.w_channel_an.options[new_channel_an_index].value;
+    }
+    else if(if_unit==2)
+    {
+        new_channel_an_2_index = cf.w_channel_an_2.selectedIndex;
+        new_channel_an_2_value = cf.w_channel_an_2.options[new_channel_an_2_index].value;
+    }
+
+//    if(index == 4 || index == 6 || index == 8 || index == 9 || index == 22 || (wlaRegion == 7 && sku == "JP") || wlaRegion == 11)
+    //if(index == 3 || index == 5 || index == 14 || wlaRegion == 7)
+    if( (selectedRegionText == "<%24%>")
+       || (selectedRegionText == "<%25%>")
+       || (selectedRegionText == "<%26%>"))
+    {
+        if(if_unit==1)    
+        {
+            if( curr_channel_an_value != new_channel_an_value)
+            {
+                setTimeout(function(){
+                    if(new_channel_an_value == "52" || new_channel_an_value == "56" ||
+                    new_channel_an_value == "60" || new_channel_an_value == "64" ||
+                    new_channel_an_value == "100" || new_channel_an_value == "104" ||
+                    new_channel_an_value == "108" || new_channel_an_value == "112" ||
+                    new_channel_an_value == "116" || new_channel_an_value == "120" ||
+                    new_channel_an_value == "124" || new_channel_an_value == "128" ||
+                    new_channel_an_value == "132" || new_channel_an_value == "136" ||
+                    new_channel_an_value == "140")
+                    if (!confirm("<%27%>"))
+                    {
+                        cf.w_channel_an.selectedIndex = curr_channel_an_index;
+                        return false;
+                    }
+                },10);
+            }
+        }
+        else if(if_unit==2)
+        {
+            if( curr_channel_an_2_value != new_channel_an_2_value)
+            {
+                setTimeout(function(){
+                    if(new_channel_an_2_value == "52" || new_channel_an_2_value == "56" ||
+                    new_channel_an_2_value == "60" || new_channel_an_2_value == "64" ||
+                    new_channel_an_2_value == "100" || new_channel_an_2_value == "104" ||
+                    new_channel_an_2_value == "108" || new_channel_an_2_value == "112" ||
+                    new_channel_an_2_value == "116" || new_channel_an_2_value == "120" ||
+                    new_channel_an_2_value == "124" || new_channel_an_2_value == "128" ||
+                    new_channel_an_2_value == "132" || new_channel_an_2_value == "136" ||
+                    new_channel_an_2_value == "140")
+                    if (!confirm("<%27%>"))
+                    {
+                        cf.w_channel_an_2.selectedIndex = curr_channel_an_2_index;
+                        return false;
+                    }
+                },10);
+            }
+        }    
+    }
+
+    // No band 4 channels for Africa, Europe, Israel, Japan, Middel East(Turkey/Tunisia/Kuwait), Middel East(United Arab Emirates) 
+//    if (index != 1 && index != 6 && index != 8 && index != 9 && index != 15 && index !=17)
+    if (1)
+    {
+        if(if_unit==1)
+        {
+            if ((curr_channel_an_index != new_channel_an_index) && (ch_selected == 100))
+            {
+                if ((curr_channel_an_value == "0") ||
+                    (curr_channel_an_value == "149") || (curr_channel_an_value == "153") ||
+                    (curr_channel_an_value == "157") || (curr_channel_an_value == "161") ||
+                    (curr_channel_an_value == "165"))
+                {
+                }
+                curr_channel_an_index = new_channel_an_index;
+                curr_channel_an_value = cf.w_channel_an.options[new_channel_an_index].value;
+            }
+        }
+        else if(if_unit==2)
+        {
+            if ((curr_channel_an_2_index != new_channel_an_2_index) && (ch_selected == 100))
+            {
+                if ((curr_channel_an_2_value == "0") ||
+                    (curr_channel_an_2_value == "149") || (curr_channel_an_2_value == "153") ||
+                    (curr_channel_an_2_value == "157") || (curr_channel_an_2_value == "161") ||
+                    (curr_channel_an_2_value == "165"))
+                {
+                }
+                curr_channel_an_2_index = new_channel_an_2_index;
+                curr_channel_an_2_value = cf.w_channel_an_2.options[new_channel_an_2_index].value;
+            }
+        }
+
+    }
+
+    return true;
+}
+
+function radiusIpChange(ipField)
+{
+    var cf=document.forms[0];
+
+    if(cf.enable_5g_band_steering.checked ==true && showDual5GBand)
+    {
+        if(ipField==0)
+            cf.RADIUSAddr1_wlh.value=cf.RADIUSAddr1_wlg.value;
+        else if(ipField==1)
+            cf.RADIUSAddr2_wlh.value=cf.RADIUSAddr2_wlg.value;
+        else if(ipField==2)
+            cf.RADIUSAddr3_wlh.value=cf.RADIUSAddr3_wlg.value;
+        else if(ipField==3)
+            cf.RADIUSAddr4_wlh.value=cf.RADIUSAddr4_wlg.value;
+    }
+}
+
+function  enterpriseSharedSecurityChange()
+{
+    var cf=document.forms[0];
+
+    if(cf.enable_5g_band_steering.checked ==true && showDual5GBand)
+        cf.wpa_en_radius_ss_wlh.value=cf.wpa_en_radius_ss_wlg.value;    
+}
+
+function  enterprisePortChange()
+{
+    var cf=document.forms[0];
+
+    if(cf.enable_5g_band_steering.checked ==true && showDual5GBand)
+        cf.wpa_en_radius_port_wlh.value=cf.wpa_en_radius_port_wlg.value;    
+}
+
+function  enterprisePollingIntChange()
+{
+    var cf=document.forms[0];
+
+    if(cf.enable_5g_band_steering.checked ==true && showDual5GBand)
+        cf.wpa_en_gk_int_wlh.selectedIndex=cf.wpa_en_gk_int_wlg.selectedIndex;    
+}
+
+function enterpriseEncryptModeChange()
+{
+    var cf=document.forms[0];
+
+    if(cf.enable_5g_band_steering.checked ==true && showDual5GBand)
+        cf.encryptmode_an_2.selectedIndex=cf.encryptmode_an.selectedIndex;
+}
+
+function setAuthAlg()
+{
+    var cf=document.forms[0];
+
+    if(cf.enable_5g_band_steering.checked ==true && showDual5GBand)
+        cf.authAlgm_an_2.selectedIndex=cf.authAlgm_an_2.selectedIndex;
+}
+
+function setKeys()
+{
+    var cf = document.forms[0];
+    cf.KEY1.disabled = cf.KEY2.disabled = cf.KEY3.disabled = cf.KEY4.disabled = false;
+    cf.KEY1_an.disabled = cf.KEY2_an.disabled = cf.KEY3_an.disabled = cf.KEY4_an.disabled = false;
+    var keysize_an_2;
+    
+    if (cf.wepenc.selectedIndex == 0)
+    {
+        cf.KEY1.maxLength = 10;
+        cf.KEY2.maxLength = 10;
+        cf.KEY3.maxLength = 10;
+        cf.KEY4.maxLength = 10;
+        keysize = 10;
+        cf.KEY1.size = cf.KEY2.size = cf.KEY3.size = cf.KEY4.size = keysize + 2 ; // extra for Mac
+        if (cf.KEY1.value.length>10)
+            cf.KEY1.value = cf.KEY1.value.substring(0,10);
+        if (cf.KEY2.value.length>10)
+            cf.KEY2.value = cf.KEY2.value.substring(0,10);
+        if (cf.KEY3.value.length>10)
+            cf.KEY3.value = cf.KEY3.value.substring(0,10);
+        if (cf.KEY4.value.length>10)
+            cf.KEY4.value = cf.KEY4.value.substring(0,10);
+    }
+    else if(cf.wepenc.selectedIndex == 1)
+    {
+        cf.KEY1.maxLength = 26;
+        cf.KEY2.maxLength = 26;
+        cf.KEY3.maxLength = 26;
+        cf.KEY4.maxLength = 26;
+        keysize = 26;
+        cf.KEY1.size = cf.KEY2.size = cf.KEY3.size = cf.KEY4.size = keysize + 2; // extra for Mac
+        if (cf.KEY1.value.length>26)
+            cf.KEY1.value = cf.KEY1.value.substring(0,26);
+        if (cf.KEY2.value.length>26)
+            cf.KEY2.value = cf.KEY2.value.substring(0,26);
+        if (cf.KEY3.value.length>26)
+            cf.KEY3.value = cf.KEY3.value.substring(0,26);
+        if (cf.KEY4.value.length>26)
+            cf.KEY4.value = cf.KEY4.value.substring(0,26);
+    }
+    else if(cf.wepenc.selectedIndex == 2)
+    {
+        keysize = 32;
+        cf.KEY1.size = cf.KEY2.size = cf.KEY3.size = cf.KEY4.size = keysize + 2; // extra for Mac
+    }    
+    if(cf.enable_5g_band_steering.check ==true && showDual5GBand)
+        cf.wepenc_an_2.selectedIndex=cf.wepenc_an.selectedIndex;
+    
+    if (cf.wepenc_an.selectedIndex == 0)
+    {
+        keysize_an = 10;
+        cf.KEY1_an.size = cf.KEY2_an.size = cf.KEY3_an.size = cf.KEY4_an.size = keysize_an + 2 ; // extra for Mac
+        if (cf.KEY1_an.value.length>10)
+            cf.KEY1_an.value = cf.KEY1_an.value.substring(0,10);
+        if (cf.KEY2_an.value.length>10)
+            cf.KEY2_an.value = cf.KEY2_an.value.substring(0,10);
+        if (cf.KEY3_an.value.length>10)
+            cf.KEY3_an.value = cf.KEY3_an.value.substring(0,10);
+        if (cf.KEY4_an.value.length>10)
+            cf.KEY4_an.value = cf.KEY4_an.value.substring(0,10);
+    }
+    else if(cf.wepenc_an.selectedIndex == 1)
+    {
+        keysize_an = 26;
+        cf.KEY1_an.size = cf.KEY2_an.size = cf.KEY3_an.size = cf.KEY4_an.size = keysize_an + 2; // extra for Mac
+        if (cf.KEY1_an.value.length>26)
+            cf.KEY1_an.value = cf.KEY1_an.value.substring(0,26);
+        if (cf.KEY2_an.value.length>26)
+            cf.KEY2_an.value = cf.KEY2_an.value.substring(0,26);
+        if (cf.KEY3_an.value.length>26)
+            cf.KEY3_an.value = cf.KEY3_an.value.substring(0,26);
+        if (cf.KEY4_an.value.length>26)
+            cf.KEY4_an.value = cf.KEY4_an.value.substring(0,26);
+    }
+    else if(cf.wepenc_an.selectedIndex == 2)
+    {
+        keysize_an = 32;
+        cf.KEY1_an.size = cf.KEY2_an.size = cf.KEY3_an.size = cf.KEY4_an.size = keysize_an + 2; // extra for Mac
+    }
+    
+    if (cf.wepenc_an_2.selectedIndex == 0)
+    {
+        keysize_an_2 = 10;
+        cf.KEY1_an_2.size = cf.KEY2_an_2.size = cf.KEY3_an_2.size = cf.KEY4_an_2.size = keysize_an + 2 ; // extra for Mac
+        if (cf.KEY1_an_2.value.length>10)
+            cf.KEY1_an_2.value = cf.KEY1_an_2.value.substring(0,10);
+        if (cf.KEY2_an_2.value.length>10)
+            cf.KEY2_an_2.value = cf.KEY2_an_2.value.substring(0,10);
+        if (cf.KEY3_an_2.value.length>10)
+            cf.KEY3_an_2.value = cf.KEY3_an_2.value.substring(0,10);
+        if (cf.KEY4_an_2.value.length>10)
+            cf.KEY4_an_2.value = cf.KEY4_an_2.value.substring(0,10);
+    }
+    else if(cf.wepenc_an.selectedIndex == 1)
+    {
+        keysize_an = 26;
+        cf.KEY1_an_2.size = cf.KEY2_an_2.size = cf.KEY3_an_2.size = cf.KEY4_an_2.size = keysize_an + 2; // extra for Mac
+        if (cf.KEY1_an_2.value.length>26)
+            cf.KEY1_an_2.value = cf.KEY1_an_2.value.substring(0,26);
+        if (cf.KEY2_an_2.value.length>26)
+            cf.KEY2_an_2.value = cf.KEY2_an_2.value.substring(0,26);
+        if (cf.KEY3_an_2.value.length>26)
+            cf.KEY3_an_2.value = cf.KEY3_an_2.value.substring(0,26);
+        if (cf.KEY4_an_2.value.length>26)
+            cf.KEY4_an_2.value = cf.KEY4_an_2.value.substring(0,26);
+    }
+    else if(cf.wepenc_an.selectedIndex == 2)
+    {
+        keysize_an_2 = 32;
+        cf.KEY1_an_2.size = cf.KEY2_an_2.size = cf.KEY3_an_2.size = cf.KEY4_an_2.size = keysize_an + 2; // extra for Mac
+    }
+}
+function wdsGray5gSecurity()
+{
+    var fm = document.forms[0];
+    if(fm.wds_enable_an.value =="1")
+    {
+        document.getElementById('5gAes').disabled = true;
+        document.getElementById('5gTA').disabled = true;
+        document.getElementById('5gEtp').disabled = true;
+        if(fm.enable_5g_band_steering.checked == true && showDual5GBand)
+        {
+            document.getElementById('5gAes_2').disabled = true;
+            document.getElementById('5gTA_2').disabled = true;
+            document.getElementById('5gEtp_2').disabled = true;
+        }
+    }
+    else
+    {
+        document.getElementById('5gAes').disabled = false;
+        document.getElementById('5gTA').disabled = false;
+        document.getElementById('5gEtp').disabled = false;
+
+        if(fm.enable_5g_band_steering.checked == true && showDual5GBand)
+        {
+            document.getElementById('5gAes_2').disabled = true;
+            document.getElementById('5gTA_2').disabled = true;
+            document.getElementById('5gEtp_2').disabled = true;
+        }
+        else
+        {
+            document.getElementById('5gAes_2').disabled = false;
+            document.getElementById('5gTA_2').disabled = false;
+            document.getElementById('5gEtp_2').disabled = false;
+        }
+
+    } 
+}
+
+
+function securityCheck(band)
+{
+    var cf = document.forms[0];
+    if (band == 0)
+    {
+        if(cf.security_type[0].checked)
+        {
+            //no thing to show
+            document.getElementById("wep_2G").style.display="none";
+            document.getElementById("wpa_2G").style.display="none";
+            document.getElementById("wpa_en_2G").style.display="none";
+            cf.security_type_2G.value="None";
+            //document.forms[0].submit();
+        }
+        if(cf.security_type[1].checked)
+        {
+            document.getElementById("wep_2G").style.display="block";
+            document.getElementById("wpa_2G").style.display="none";
+            document.getElementById("wpa_en_2G").style.display="none";
+            cf.security_type_2G.value="WEP";
+            //document.forms[0].submit();
+        }
+        if(cf.security_type[2].checked)
+        {
+            if (cf.opmode.selectedIndex != 0)
+            {
+                /* we add a redundant assignment here so that the 
+                   following warning alert wouldn't appear twice */
+                cf.opmode.selectedIndex = 0;
+				setTimeout(function(){
+                alert("<%28%>");
+				},10);   
+                cf.opmode.selectedIndex = 0;
+                document.getElementById("wep_radio_2G").style.display="block";
+                document.getElementById("wpa_radio_2G").style.display="none";
+            }
+            document.getElementById("wpa_2G").style.display="block";
+            document.getElementById("wep_2G").style.display="none";
+            document.getElementById("wpa_en_2G").style.display="none";
+            cf.security_type_2G.value="WPA-PSK";
+            //document.forms[0].submit();
+        }
+        if(cf.security_type[3].checked)
+        {
+            document.getElementById("wpa_2G").style.display="block";
+            document.getElementById("wep_2G").style.display="none";
+            document.getElementById("wpa_en_2G").style.display="none";
+            cf.security_type_2G.value="WPA2-PSK";
+            //document.forms[0].submit();
+        }
+        if(cf.security_type[4].checked)
+        {
+            if ((cf.opmode.selectedIndex != 0) && (cf.opmode.selectedIndex!=selected2))
+            {
+                selected2=cf.opmode.selectedIndex;
+				setTimeout(function(){
+                alert("<%28%>");
+				},10);   
+            }
+            document.getElementById("wpa_2G").style.display="block";
+            document.getElementById("wep_2G").style.display="none";
+            document.getElementById("wpa_en_2G").style.display="none";
+            cf.security_type_2G.value="WPA-AUTO-PSK";
+            //document.forms[0].submit();
+        }
+        if(cf.security_type[5].checked) //WPA/WPA2 enterprise 
+        {
+            var ipaddr_tmp = cf.wla_radius_ipaddr.value.split(".");    
+            if ((cf.opmode.selectedIndex != 0) && (cf.opmode.selectedIndex!=selected2))
+            {
+                selected2=cf.opmode.selectedIndex;
+                setTimeout(function(){
+                alert("<%29%>");
+                },10);
+            }
+            document.getElementById("wpa_en_2G").style.display="block";
+            document.getElementById("wpa_2G").style.display="none";
+            document.getElementById("wep_2G").style.display="none";
+            cf.security_type_2G.value="WPA-ENTERPRISE";           
+            cf.RADIUSAddr1_wla.value = ipaddr_tmp[0];
+            cf.RADIUSAddr2_wla.value = ipaddr_tmp[1];
+            cf.RADIUSAddr3_wla.value = ipaddr_tmp[2];
+            cf.RADIUSAddr4_wla.value = ipaddr_tmp[3];
+            if (cf.wla_ent_secu_type.value == "WPA2")
+            {
+                cf.encryptmode.selectedIndex = 0;
+            }
+            else 
+            {
+                cf.encryptmode.selectedIndex = 1;
+            }
+        }        
+    }
+    else if (band == 1)
+    {
+        if(cf.security_type_an[0].checked)
+        {
+            //no thing to show
+            document.getElementById("wep_5G").style.display="none";
+            document.getElementById("wpa_5G").style.display="none";
+            document.getElementById("wpa_en_5G").style.display="none";
+            cf.security_type_5G.value="None";
+            if(cf.enable_5g_band_steering.checked == true && showDual5GBand)
+            {
+                 
+                cf.security_type_an_2[0].checked=true;
+                document.getElementById("wep_5G_2").style.display="none";
+                document.getElementById("wpa_5G_2").style.display="none";
+                document.getElementById("wpa_en_5G_2").style.display="none";
+            }
+
+            
+            //document.forms[0].submit();
+        }
+        else if(cf.security_type_an[1].checked)
+        {
+            document.getElementById("wep_5G").style.display="block";
+            document.getElementById("wpa_5G").style.display="none";
+            document.getElementById("wpa_en_5G").style.display="none";
+            cf.security_type_5G.value="WEP";
+            if(cf.enable_5g_band_steering.checked == true && showDual5GBand)
+            {
+                cf.security_type_an_2[1].checked=true;
+                document.getElementById("wep_5G_2").style.display="block";
+                document.getElementById("wpa_5G_2").style.display="none";
+                document.getElementById("wpa_en_5G_2").style.display="none";
+            }
+            //document.forms[0].submit();
+        }
+        else if(cf.security_type_an[2].checked)
+        {
+            if (cf.opmode_an.selectedIndex != 0)
+            {
+                /* we add a redundant assignment here so that the 
+                   following warning alert wouldn't appear twice */
+                cf.opmode_an.selectedIndex = 0;
+                setTimeout(function(){
+                alert("<%28%>");
+                },10);
+                setChannel();
+                document.getElementById("wep_radio_5G").style.display="block";
+                cf.opmode_an.selectedIndex = 0;
+            }
+            document.getElementById("wpa_5G").style.display="block";
+            document.getElementById("wep_5G").style.display="none";
+            document.getElementById("wpa_en_5G").style.display="none";
+            cf.security_type_5G.value="WPA-PSK";
+            if(cf.enable_5g_band_steering.checked == true && showDual5GBand)
+            {
+                cf.security_type_an_2[2].checked=true;
+                document.getElementById("wep_5G_2").style.display="none";
+                document.getElementById("wpa_5G_2").style.display="block";
+                document.getElementById("wpa_en_5G_2").style.display="none";
+            }
+            //document.forms[0].submit();
+        }
+        else if(cf.security_type_an[3].checked)
+        {
+            document.getElementById("wpa_5G").style.display="block";
+            document.getElementById("wep_5G").style.display="none";
+            document.getElementById("wpa_en_5G").style.display="none";
+            cf.security_type_5G.value="WPA2-PSK";
+            if(cf.enable_5g_band_steering.checked == true && showDual5GBand)
+            {
+                cf.security_type_an_2[3].checked=true;
+                document.getElementById("wep_5G_2").style.display="none";
+                document.getElementById("wpa_5G_2").style.display="block";
+                document.getElementById("wpa_en_5G_2").style.display="none";
+            }
+            //document.forms[0].submit();
+        }
+        else if(cf.security_type_an[4].checked)
+        {
+            if ((cf.support_ac_mode.value == "1") && (cf.opmode_an.selectedIndex!=selected3))
+            {
+                selected3=cf.opmode_an.selectedIndex;
+                setTimeout(function(){
+                alert("<%30%>");
+                },10);
+            }
+            else
+            if ((cf.opmode_an.selectedIndex != 0) && (cf.opmode_an.selectedIndex!=selected3))
+            {
+                selected3=cf.opmode_an.selectedIndex;
+                setTimeout(function(){
+                alert("<%31%>");
+                },10);
+            }
+            document.getElementById("wpa_5G").style.display="block";
+            document.getElementById("wep_5G").style.display="none";
+            document.getElementById("wpa_en_5G").style.display="none";
+            cf.security_type_5G.value="WPA-AUTO-PSK";
+            if(cf.enable_5g_band_steering.checked == true && showDual5GBand)
+            {
+                cf.security_type_an_2[4].checked=true;
+                document.getElementById("wep_5G_2").style.display="none";
+                document.getElementById("wpa_5G_2").style.display="block";
+                document.getElementById("wpa_en_5G_2").style.display="none";
+            }
+
+            //document.forms[0].submit();
+        }
+        else if(cf.security_type_an[5].checked)
+        {
+            var ipaddr_tmp = cf.wlg_radius_ipaddr.value.split(".");  
+            if ((cf.support_ac_mode.value == "1") && (cf.opmode_an.selectedIndex!=selected3))
+            {
+                selected3=cf.opmode_an.selectedIndex;
+                //alert("<%30%>");
+                setTimeout(function(){
+				alert("<%29%>");
+                },10);
+            }
+            else
+            if ((cf.opmode_an.selectedIndex != 0) && (cf.opmode_an.selectedIndex!=selected3))
+            {
+                selected3=cf.opmode_an.selectedIndex;
+                //alert("<%31%>");
+                setTimeout(function(){
+				alert("<%29%>");
+                },10);
+            }
+            document.getElementById("wpa_5G").style.display="none";
+            document.getElementById("wep_5G").style.display="none";
+            document.getElementById("wpa_en_5G").style.display="block";
+            if(cf.enable_5g_band_steering.checked == true && showDual5GBand)
+            {
+                cf.security_type_an_2[5].checked=true;
+                document.getElementById("wep_5G_2").style.display="none";
+                document.getElementById("wpa_5G_2").style.display="none";
+                document.getElementById("wpa_en_5G_2").style.display="block";
+            }
+            cf.security_type_5G.value="WPA-ENTERPRISE";
+            cf.RADIUSAddr1_wlg.value = ipaddr_tmp[0];
+            cf.RADIUSAddr2_wlg.value = ipaddr_tmp[1];
+            cf.RADIUSAddr3_wlg.value = ipaddr_tmp[2];
+            cf.RADIUSAddr4_wlg.value = ipaddr_tmp[3];
+            if (cf.wlg_ent_secu_type.value == "WPA2")
+            {
+                cf.encryptmode_an.selectedIndex = 0;
+                if(cf.enable_5g_band_steering.checked == true && showDual5GBand)
+                    cf.encryptmode_an_2.selectedIndex = 0;
+            }
+            else 
+            {
+                cf.encryptmode_an.selectedIndex = 1;
+                if(cf.enable_5g_band_steering.checked == true && showDual5GBand)
+                    cf.encryptmode_an_2.selectedIndex = 1;
+            }
+        }
+
+        if(cf.enable_5g_band_steering.checked == true && showDual5GBand)
+            disable5G_2Setting()       
+
+    }
+    else if (band == 2)
+    {
+        if(cf.security_type_an_2[0].checked)
+        {
+            document.getElementById("wep_5G_2").style.display="none";
+            document.getElementById("wpa_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="none";
+            cf.security_type_5G_2.value="None";
+        }
+        if(cf.security_type_an_2[1].checked)
+        {
+            document.getElementById("wep_5G_2").style.display="block";
+            document.getElementById("wpa_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="none";
+            cf.security_type_5G_2.value="WEP";
+        }
+        if(cf.security_type_an_2[2].checked)
+        {
+            if (cf.opmode_an_2.selectedIndex != 0)
+            {
+                /* we add a redundant assignment here so that the 
+                   following warning alert wouldn't appear twice */
+                cf.opmode_an_2.selectedIndex = 0;
+                setTimeout(function(){
+                alert("<%28%>");
+                },10);
+                setChannel();
+                document.getElementById("wep_radio_5G_2").style.display="block";
+                cf.opmode_an.selectedIndex = 0;
+            }
+            document.getElementById("wpa_5G_2").style.display="block";
+            document.getElementById("wep_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="none";
+            cf.security_type_5G_2.value="WPA-PSK";
+            //document.forms[0].submit();
+        }
+        if(cf.security_type_an_2[3].checked)
+        {
+            document.getElementById("wpa_5G_2").style.display="block";
+            document.getElementById("wep_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="none";
+            cf.security_type_5G_2.value="WPA2-PSK";
+            //document.forms[0].submit();
+        }
+        if(cf.security_type_an_2[4].checked)
+        {
+            if ((cf.support_ac_mode.value == "1") && (cf.opmode_an_2.selectedIndex!=selected3))
+            {
+                selected3=cf.opmode_an_2.selectedIndex;
+                setTimeout(function(){
+                alert("<%30%>");
+                },10);
+            }
+            else
+            if ((cf.opmode_an_2.selectedIndex != 0) && (cf.opmode_an_2.selectedIndex!=selected3))
+            {
+                selected3=cf.opmode_an_2.selectedIndex;
+                setTimeout(function(){
+                alert("<%31%>");
+                },10);
+            }
+            document.getElementById("wpa_5G_2").style.display="block";
+            document.getElementById("wep_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="none";
+            cf.security_type_5G_2.value="WPA-AUTO-PSK";
+            //document.forms[0].submit();
+        }
+        if(cf.security_type_an_2[5].checked)
+        {
+            var ipaddr_tmp = cf.wlh_radius_ipaddr.value.split(".");  
+            if ((cf.support_ac_mode.value == "1") && (cf.opmode_an_2.selectedIndex!=selected3))
+            {
+                selected3=cf.opmode_an_2.selectedIndex;
+                //alert("<%30%>");
+                setTimeout(function(){
+				alert("<%29%>");
+                },10);
+            }
+            else
+            if ((cf.opmode_an_2.selectedIndex != 0) && (cf.opmode_an_2.selectedIndex!=selected3))
+            {
+                selected3=cf.opmode_an_2.selectedIndex;
+                //alert("<%31%>");
+                setTimeout(function(){
+				alert("<%29%>");
+                },10);
+            }
+            document.getElementById("wpa_5G_2").style.display="none";
+            document.getElementById("wep_5G_2").style.display="none";
+            document.getElementById("wpa_en_5G_2").style.display="block";
+            cf.security_type_5G_2.value="WPA-ENTERPRISE";
+            cf.RADIUSAddr1_wlh.value = ipaddr_tmp[0];
+            cf.RADIUSAddr2_wlh.value = ipaddr_tmp[1];
+            cf.RADIUSAddr3_wlh.value = ipaddr_tmp[2];
+            cf.RADIUSAddr4_wlh.value = ipaddr_tmp[3];
+            if (cf.wlh_ent_secu_type.value == "WPA2")
+            {
+                cf.encryptmode_an_2.selectedIndex = 0;
+            }
+            else 
+            {
+                cf.encryptmode_an_2.selectedIndex = 1;
+            }
+        }
+
+    }
+    setOpMode();
+}
+
+function checkData()
+{
+    var cf = document.forms[0];
+    var msg_key64_type = "<%32%>" ;
+    var msg_key128_type = "<%33%>";
+    var show_wep_or_wps_msg = false;
+    var wps_version = "<%34%>";  
+    //var show_wep_or_wps_v20_msg = false;
+    var show_tkip_or_wps_v20_msg = false;
+    var show_ssid_bc_or_wps_v20_msg = false;
+    var show_open_or_wps_v20_msg = false;
+    
+    var index = cf.WRegion.selectedIndex;
+
+    var cf = document.forms[0];
+    var msg = ""; var blankFlag = false; var sizeOK = false; var i;
+    var len = (cf.wepenc.selectedIndex==0)?10:((cf.wepenc.selectedIndex==1)?26:32);
+    var len_an = (cf.wepenc_an.selectedIndex==0)?10:((cf.wepenc_an.selectedIndex==1)?26:32);
+    var len_an_2 = (cf.wepenc_an_2.selectedIndex==0)?10:((cf.wepenc_an_2.selectedIndex==1)?26:32);
+    
+    var needGrayOutWPS = 0;
+    if(!checkRegion()) return false;
+
+    if (cf.ssid.value == "")
+    {
+        alert("<%35%>");
+        return false;
+    }
+
+    if (cf.ssid.value.match( /[^\x20-\x7E]/ ))
+    {
+        alert("<%36%>");
+        return false;
+    }
+
+    if (cf.wds_enable.value == "1" && cf.w_channel[0].selected)
+    {
+        alert("<%37%>");
+        return false;
+    }
+        
+//    if ((cf.auto_channel_5G.value == "1") && (index != 1 && index != 6 && index != 8 && index != 9 && index != 15 && index != 17))		// No band 4 channels for Africa, Europe, Israel, Japan, Middel East(Turkey/Tunisia/Kuwait), Middel East(United Arab Emirates) 
+    if (cf.auto_channel_5G.value == "1")		// No band 4 channels for Africa, Europe, Israel, Japan, Middel East(Turkey/Tunisia/Kuwait), Middel East(United Arab Emirates) 
+    {
+        if (cf.wds_enable_an.value == "1" && cf.w_channel_an[0].selected && (!cf.opmode_an[2].selected))
+        {
+            alert("<%37%>");
+            return false;
+        }
+    }
+
+    
+    if (cf.ssid_an.value == "")
+    {
+        alert("<%35%>");
+        return false;
+    }
+
+    if (cf.ssid_an.value.match( /[^\x20-\x7E]/ ))
+    {
+        alert("<%36%>");
+        return false;
+    }
+
+    if(showDual5GBand)
+    {
+        if (cf.ssid_an_2.value == "")
+        {
+            alert("<%35%>");
+            return false;
+        }
+        if (cf.ssid_an_2.value.match( /[^\x20-\x7E]/ ))
+        {
+            alert("<%36%>");
+            return false;
+        }
+    }
+    //Foxconn added start, Wins, 06/22/2011, @WPS v2.0
+    if (wps_version == "2.0")
+    {
+        //Disable SSID Broadcast (2.4GHz)
+        if(!cf.ssid_bc.checked) {
+            if (!confirm("<%38%>")){
+                return false;
+            }
+            show_ssid_bc_or_wps_v20_msg = true;
+            needGrayOutWPS = 1;
+        }
+
+        //Disable SSID Broadcast (5GHz)
+        if(!cf.ssid_bc_an.checked || !cf.ssid_bc_an_2.checked) {
+            if (!show_ssid_bc_or_wps_v20_msg ) {
+                if (!confirm("<%38%>")){
+                    return false;
+                }
+            }
+            show_ssid_bc_or_wps_v20_msg = true;
+            needGrayOutWPS = 1;
+        }
+
+
+        //Security option is set to None (2.4GHz)
+        if (cf.security_type_2G.value == "None") {
+            if (!confirm("<%39%>")){
+                return false;
+            }
+            show_open_or_wps_v20_msg = true;
+        }
+
+        //Security option is set to None (5GHz-2)
+//       if( index != 1 && index !=5 &&  index!=6 && index != 8 &&  index!=9 && index!=13 && index!=14 && index!=15 && index!=17 && index !=18)
+        if( 1)
+        {
+            if (cf.security_type_5G.value == "None" ||cf.security_type_5G_2.value == "None") {
+                if (!show_open_or_wps_v20_msg) {
+                    if (!confirm("<%39%>")){
+                        return false;
+                    }
+                }
+                show_open_or_wps_v20_msg = true;
+            }
+        }
+    }
+    //Foxconn added end, Wins, 06/22/2011, @WPS v2.0
+        
+    if (cf.security_type_2G.value == "WEP")
+    {
+        for (i = 1; i < 5; i++ )
+        {
+            msg = "";
+            blankFlag = ! (eval("(cf.wep_key_no[" + (i-1) + "].checked)")); // default key
+            if( (blankFlag) && (eval("(cf.KEY" + i + ".value.length == 0)")) )
+                continue; 
+            sizeOK = (((eval("isHex(cf.KEY" + i +".value)")) && (eval("(cf.KEY" + i + ".value.length == len)"))) || (eval("(cf.KEY" + i + ".value.length == len/2)")));
+            if (!sizeOK)
+            {
+                msg += (len == 10)?msg_key64_type:msg_key128_type;
+                alertR(msg);
+                if (i==1)
+                    cf.KEY1.focus();
+                else if (i==2)
+                    cf.KEY2.focus();
+                else if (i==3)
+                    cf.KEY3.focus();
+                else if (i==4)
+                    cf.KEY4.focus();
+                return false;
+            }
+        }
+        //Foxconn modified start, Wins, 06/22/2011, @WPS v2.0
+        if (wps_version == "2.0")
+        {   
+            if (!confirm("<%40%>")){
+                return false;
+            }
+            show_tkip_or_wps_v20_msg = true;
+            needGrayOutWPS = 1;
+        }
+        else
+        {
+            if (cf.authAlgm.value.toLowerCase() == "sharedkey" && 
+				(cf.initAuthType.value.toLowerCase() != "sharedkey" || cf.init_security_type_2G.value.toLowerCase() != "wep"))
+            {
+                 if (!confirm("<%41%>")){
+                    return false;
+                }
+                show_wep_or_wps_msg = true;
+            }
+            if(cf.authAlgm.value.toLowerCase() == "sharedkey")
+                needGrayOutWPS = 1;
+        }
+        //Foxconn modified end, Wins, 06/22/2011, @WPS v2.0
+        
+        
+        if(!cf.ssid_bc.checked)
+        {
+            cf.ssid_bc.value = "";
+        }
+        if(cf.wep_key_no[0].checked == true)
+        {
+            cf.wep_key_no.value = "1";
+        }
+        else if(cf.wep_key_no[1].checked == true)
+        {
+            cf.wep_key_no.value = "2";
+        }
+        else if(cf.wep_key_no[2].checked == true)
+        {
+            cf.wep_key_no.value = "3";
+        }
+        else if(cf.wep_key_no[3].checked == true)
+        {
+            cf.wep_key_no.value = "4";
+        }
+    }
+    
+    if (cf.security_type_5G.value == "WEP")
+    {
+        for (i = 1; i < 5; i++ )
+        {
+            msg = "";
+            blankFlag = ! (eval("(cf.wep_key_no_an[" + (i-1) + "].checked)")); // default key
+            if( (blankFlag) && (eval("(cf.KEY" + i + "_an" + ".value.length == 0)")) )
+                continue; // blank ok
+            sizeOK = ((eval("isHex(cf.KEY" + i + "_an" +".value)")) && (eval("(cf.KEY" + i + "_an" + ".value.length == len_an)")));
+            if (!sizeOK)
+            {
+                msg += (len_an == 10)?msg_key64_type:msg_key128_type;
+                alertR(msg);
+                if (i==1)
+                    cf.KEY1_an.focus();
+                else if (i==2)
+                    cf.KEY2_an.focus();
+                else if (i==3)
+                    cf.KEY3_an.focus();
+                else if (i==4)
+                    cf.KEY4_an.focus();
+                return false;
+            }
+        }
+        //Foxconn modified start, Wins, 06/22/2011, @WPS v2.0
+        if (wps_version == "2.0")
+        {
+            if (!show_tkip_or_wps_v20_msg) {
+                if (!confirm("<%40%>")){
+                    return false;
+                }
+            }
+            show_tkip_or_wps_v20_msg = true;
+            needGrayOutWPS = 1;
+        }
+        else
+        {
+            if (cf.authAlgm_an.value.toLowerCase() == "sharedkey" && 
+				(cf.initAuthType_an.value.toLowerCase() != "sharedkey" && cf.init_security_type_5G.value.toLowerCase() != "wep"))
+            {
+                if (!show_wep_or_wps_msg) {
+                    if (!confirm("<%41%>")){
+                        return false;
+                    }
+                }
+                show_wep_or_wps_msg = true;
+            }
+            if (cf.authAlgm_an.value.toLowerCase() == "sharedkey")
+                needGrayOutWPS = 1;     
+        }
+        //Foxconn modified end, Wins, 06/22/2011, @WPS v2.0
+        
+        if(!cf.ssid_bc_an.checked)
+        {
+            cf.ssid_bc_an.value = "";
+        }
+        if(cf.wep_key_no_an[0].checked == true)
+        {
+            cf.wep_key_no_an.value = "1";
+        }
+        else if(cf.wep_key_no_an[1].checked == true)
+        {
+            cf.wep_key_no_an.value = "2";
+        }
+        else if(cf.wep_key_no_an[2].checked == true)
+        {
+            cf.wep_key_no_an.value = "3";
+        }
+        else if(cf.wep_key_no_an[3].checked == true)
+        {
+            cf.wep_key_no_an.value = "4";
+        }
+    }
+
+
+    if(showDual5GBand)
+    {
+        if (cf.security_type_5G_2.value == "WEP")
+        {
+            for (i = 1; i < 5; i++ )
+            {
+                msg = "";
+                blankFlag = ! (eval("(cf.wep_key_no_an_2[" + (i-1) + "].checked)")); // default key
+                if( (blankFlag) && (eval("(cf.KEY" + i + "_an_2" + ".value.length == 0)")) )
+                    continue; // blank ok
+                sizeOK = ((eval("isHex(cf.KEY" + i + "_an_2" +".value)")) && (eval("(cf.KEY" + i + "_an_2" + ".value.length == len_an_2)")));
+                if (!sizeOK)
+                {
+                    msg += (len_an_2 == 10)?msg_key64_type:msg_key128_type;
+                    alertR(msg);
+                    if (i==1)
+                        cf.KEY1_an_2.focus();
+                    else if (i==2)
+                        cf.KEY2_an_2.focus();
+                    else if (i==3)
+                        cf.KEY3_an_2.focus();
+                    else if (i==4)
+                        cf.KEY4_an_2.focus();
+                    return false;
+                }
+            }
+            //Foxconn modified start, Wins, 06/22/2011, @WPS v2.0
+            if (wps_version == "2.0")
+            {
+                if (!show_tkip_or_wps_v20_msg) {
+                    if (!confirm("<%40%>")){
+                        return false;
+                    }
+                }
+                show_tkip_or_wps_v20_msg = true;
+                needGrayOutWPS = 1;
+            }
+            else
+            {
+                if (cf.authAlgm_an_2.value.toLowerCase() == "sharedkey" && 
+		           		(cf.initAuthType_an_2.value.toLowerCase() != "sharedkey" && cf.init_security_type_5G_2.value.toLowerCase() != "wep"))
+                {
+                    if (!show_wep_or_wps_msg) {
+                        if (!confirm("<%41%>")){
+                            return false;
+                        }
+                    }
+                    show_wep_or_wps_msg = true;
+                }
+                if (cf.authAlgm_an_2.value.toLowerCase() == "sharedkey")
+                    needGrayOutWPS = 1;     
+            }
+        
+            if(!cf.ssid_bc_an_2.checked)
+            {
+                cf.ssid_bc_an_2.value = "";
+            }
+            if(cf.wep_key_no_an_2[0].checked == true)
+            {
+                cf.wep_key_no_an_2.value = "1";
+            }
+            else if(cf.wep_key_no_an_2[1].checked == true)
+            {
+                cf.wep_key_no_an_2.value = "2";
+            }
+            else if(cf.wep_key_no_an_2[2].checked == true)
+            {
+                cf.wep_key_no_an_2.value = "3";
+            }
+            else if(cf.wep_key_no_an_2[3].checked == true)
+            {
+                cf.wep_key_no_an_2.value = "4";
+            }
+        }
+    }
+    
+    if (cf.security_type_2G.value == "WPA-PSK" || cf.security_type_2G.value == "WPA2-PSK" || cf.security_type_2G.value == "WPA-AUTO-PSK")
+    {
+        //Foxconn added end, Wins, 06/22/2011, @WPS v2.0
+        if (wps_version == "2.0")
+        {
+            if (cf.security_type_2G.value == "WPA-PSK")
+            {
+                if (!confirm("<%40%>")){
+                    return false;
+                }
+                show_tkip_or_wps_v20_msg = true;
+                needGrayOutWPS = 1;
+            }
+        }
+        //Foxconn added end, Wins, 06/22/2011, @WPS v2.0
+
+        if(cf.passphrase.value.length < 8)
+        {
+            alert("<%42%>");
+            return false;    
+        }
+        if(cf.passphrase.value.length > 63)
+        {
+            if ( isHex(cf.passphrase.value) == false)
+            {
+                alert("<%42%>");
+                cf.passphrase.value = "";
+                return false;
+            }    
+        }
+        
+        if (cf.passphrase.value.match( /[^\x20-\x7E]/ ))
+        {
+            alert("<%43%>");
+            cf.passphrase.focus();
+            return false;
+        }
+        
+        if (cf.wds_enable.value == "1" && cf.w_channel[0].selected)
+        {
+            alert("<%37%>");
+            cf.w_channel.focus();
+            return false;
+        }
+
+        if(!cf.ssid_bc.checked)
+        {
+            cf.ssid_bc.value = "";
+        }
+/*      if("<%44%>" == "checked")
+        {
+            cf.security_type.value = "WPA-PSK";
+        }
+        else if("<%45%>" == "checked")
+        {
+            cf.security_type.value = "WPA2-PSK";
+        }
+        else if("<%46%>" == "checked")
+        {
+            cf.security_type.value = "AUTO-PSK";
+        }
+*/
+
+    }
+    
+    if (cf.security_type_5G.value == "WPA-PSK" || cf.security_type_5G.value == "WPA2-PSK" || cf.security_type_5G.value == "WPA-AUTO-PSK")
+    {
+        //Foxconn added end, Wins, 06/22/2011, @WPS v2.0
+        if (wps_version == "2.0")
+        {
+            if (cf.security_type_5G.value == "WPA-PSK")
+            {
+                if (!show_tkip_or_wps_v20_msg) {
+                    if (!confirm("<%40%>")){
+                        return false;
+                    }
+                }
+                show_tkip_or_wps_v20_msg = true;
+                needGrayOutWPS = 1;
+            }
+        }
+        //Foxconn added end, Wins, 06/22/2011, @WPS v2.0
+
+        
+        if(cf.passphrase_an.value.length < 8)
+        {
+            alert("<%42%>");
+            return false;    
+        }
+        if(cf.passphrase_an.value.length > 63)
+        {
+            if ( isHex(cf.passphrase_an.value) == false)
+            {
+                alert("<%42%>");
+                cf.passphrase_an.value = "";
+                return false;
+            }    
+        }
+        
+        if (cf.passphrase_an.value.match( /[^\x20-\x7E]/ ))
+        {
+            alert("<%43%>");
+            cf.passphrase_an.focus();
+            return false;
+        }
+
+        //if ((cf.auto_channel_5G.value == "1") && (index != 1 && index != 6 && index != 8 && index != 9 && index != 15 && index != 17))		// No band 4 channels for Africa, Europe, Israel, Japan, Middel East(Turkey/Tunisia/Kuwait), Middel East(United Arab Emirates) 
+        //{
+        //    if (cf.wds_enable_an.value == "1" && cf.w_channel_an[0].selected)
+        //    {
+        //        alert("<%37%>");
+        //        return false;
+        //    }
+        //}
+
+        if(!cf.ssid_bc_an.checked)
+        {
+            cf.ssid_bc_an.value = "";
+        }
+/*
+        if("<%47%>" == "checked")
+        {
+            cf.security_type_an.value = "WPA-PSK";
+        }
+        else if("<%48%>" == "checked")
+        {
+            cf.security_type_an.value = "WPA2-PSK";
+        }
+        else if("<%49%>" == "checked")
+        {
+            cf.security_type_an.value = "AUTO-PSK";
+        }
+*/
+    }
+
+    if(showDual5GBand)
+    {
+        if (cf.security_type_5G_2.value == "WPA-PSK" || cf.security_type_5G_2.value == "WPA2-PSK" || cf.security_type_5G_2.value == "WPA-AUTO-PSK")
+        {
+            //Foxconn added end, Wins, 06/22/2011, @WPS v2.0
+            if (wps_version == "2.0")
+            {
+                if (cf.security_type_5G_2.value == "WPA-PSK")
+                {
+                    if (!show_tkip_or_wps_v20_msg) {
+                        if (!confirm("<%40%>")){
+                            return false;
+                        }
+                    }
+                    show_tkip_or_wps_v20_msg = true;
+                    needGrayOutWPS = 1;
+                }
+            }
+            //Foxconn added end, Wins, 06/22/2011, @WPS v2.0
+
+        
+            if(cf.passphrase_an_2.value.length < 8)
+            {
+                alert("<%42%>");
+                return false;    
+            }
+            if(cf.passphrase_an_2.value.length > 63)
+            {
+                if ( isHex(cf.passphrase_an_2.value) == false)
+                {
+                    alert("<%42%>");
+                    cf.passphrase_an_2.value = "";
+                    return false;
+                }    
+            }
+        
+            if (cf.passphrase_an_2.value.match( /[^\x20-\x7E]/ ))
+            {
+                alert("<%43%>");
+                cf.passphrase_an_2.focus();
+                return false;
+            }
+
+
+            if(!cf.ssid_bc_an_2.checked)
+            {
+                cf.ssid_bc_an_2.value = "";
+            }
+/*  
+           if("<%50%>" == "checked")
+            {
+                cf.security_type_an_2.value = "WPA-PSK";
+            }
+            else if("<%51%>" == "checked")
+            {
+                cf.security_type_an_2.value = "WPA2-PSK";
+            }
+            else if("<%52%>" == "checked")
+            {
+                cf.security_type_an_2.value = "AUTO-PSK";
+            }
+*/
+        }
+    }
+
+    if (cf.security_type_2G.value == "WPA-ENTERPRISE")
+    {
+        var wan_ipaddr = cf.wan_ipaddr.value.split(".");
+        var w_ipaddr = (wan_ipaddr[0] << 24) | (wan_ipaddr[1] << 16) | (wan_ipaddr[2] << 8)| (wan_ipaddr[3]);
+        var w_setip = (cf.RADIUSAddr1_wla.value << 24) | (cf.RADIUSAddr2_wla.value << 16) | (cf.RADIUSAddr3_wla.value << 8)| (cf.RADIUSAddr4_wla.value);
+        var setPort = parseInt(cf.wpa_en_radius_port.value,10);
+        var ss_len = cf.wpa_en_radius_ss.value.length;
+
+
+        /* ip checking  */
+        if ( (w_setip != 0) && ( w_ipaddr == w_setip) )
+        {
+            alert("<%53%>");
+            return false;
+        }        
+        if(checkIP(cf.RADIUSAddr1_wla,cf.RADIUSAddr2_wla,cf.RADIUSAddr3_wla,cf.RADIUSAddr4_wla,254)
+            ||(parseInt(cf.RADIUSAddr4_wla.value,10)==0)||parseInt(cf.RADIUSAddr1_wla.value,10)>224
+            /*||(l_ipaddr < lan_netaddr_min)||(l_ipaddr > lan_netaddr_max)*/)
+        {
+            alert("<%10%>");
+            return false;
+        }
+        
+        /* port  checking */ 
+        if(setPort > 65535 || setPort < 0)
+        {
+            alert("<%54%>");
+            return false;
+        }       
+        
+        /* share screct length checking */ 
+        if(ss_len > 128)
+        {
+            alert("<%55%>");
+            return false;  
+        }   
+		needGrayOutWPS = 1; 
+    } 
+
+    if (cf.security_type_5G.value == "WPA-ENTERPRISE")
+    {
+        var wan_ipaddr = cf.wan_ipaddr.value.split(".");
+        var w_ipaddr = (wan_ipaddr[0] << 24) | (wan_ipaddr[1] << 16) | (wan_ipaddr[2] << 8)| (wan_ipaddr[3]);
+        var w_setip = (cf.RADIUSAddr1_wlg.value << 24) | (cf.RADIUSAddr2_wlg.value << 16) | (cf.RADIUSAddr3_wlg.value << 8)| (cf.RADIUSAddr4_wlg.value);
+        var setPort = parseInt(cf.wpa_en_radius_port_wlg.value,10);
+        var ss_len = cf.wpa_en_radius_ss_wlg.value.length;
+                
+        /* ip checking  */
+        if ( (w_setip != 0) && ( w_setip == w_ipaddr) )
+        {
+            alert("<%53%>");
+            return false;
+        }        
+        if(checkIP(cf.RADIUSAddr1_wlg,cf.RADIUSAddr2_wlg,cf.RADIUSAddr3_wlg,cf.RADIUSAddr4_wlg,254)
+            ||(parseInt(cf.RADIUSAddr4_wlg.value,10)==0)||parseInt(cf.RADIUSAddr1_wlg.value,10)>224
+            /*||(l_ipaddr < lan_netaddr_min)||(l_ipaddr > lan_netaddr_max)*/)
+        {
+            alert("<%10%>");
+            return false;
+        }
+
+        /* port  checking */ 
+        if(setPort > 65535 || setPort < 0)
+        {
+            alert("<%54%>");
+            return false;
+        }       
+
+        /* share screct length checking */ 
+        if(ss_len > 128)
+        {
+            alert("<%55%>");
+            return false;  
+        }    
+		needGrayOutWPS = 1; 
+    }
+
+    if(showDual5GBand)
+    {
+        if (cf.security_type_5G_2.value == "WPA-ENTERPRISE")
+        {
+            var wan_ipaddr = cf.wan_ipaddr.value.split(".");
+            var w_ipaddr = (wan_ipaddr[0] << 24) | (wan_ipaddr[1] << 16) | (wan_ipaddr[2] << 8)| (wan_ipaddr[3]);
+            var w_setip = (cf.RADIUSAddr1_wlh.value << 24) | (cf.RADIUSAddr2_wlh.value << 16) | (cf.RADIUSAddr3_wlh.value << 8)| (cf.RADIUSAddr4_wlh.value);
+            var setPort = parseInt(cf.wpa_en_radius_port_wlh.value,10);
+            var ss_len = cf.wpa_en_radius_ss_wlh.value.length;
+                
+            /* ip checking  */
+            if ( (w_setip != 0) && ( w_setip == w_ipaddr) )
+            {
+                alert("<%53%>");
+                return false;
+            }        
+            if(checkIP(cf.RADIUSAddr1_wlh,cf.RADIUSAddr2_wlh,cf.RADIUSAddr3_wlh,cf.RADIUSAddr4_wlh,254)
+                ||(parseInt(cf.RADIUSAddr4_wlh.value,10)==0)||parseInt(cf.RADIUSAddr1_wlh.value,10)>224
+                /*||(l_ipaddr < lan_netaddr_min)||(l_ipaddr > lan_netaddr_max)*/)
+            {
+                alert("<%10%>");
+                return false;
+            }
+
+            /* port  checking */ 
+            if(setPort > 65535 || setPort < 0)
+            {
+                alert("<%54%>");
+                return false;
+            }       
+
+            /* share screct length checking */ 
+            if(ss_len > 128)
+            {
+                alert("<%55%>");
+                return false;  
+            }    
+		       needGrayOutWPS = 1; 
+		    }
+    }
+    
+    if(cf.enable_band_steering.value=="1")
+    {
+
+        if((cf.ssid.value != cf.ssid_an.value) ||(cf.security_type_2G.value!=cf.security_type_5G.value))
+        {
+            if (!confirm("<%56%>"))
+               return false;
+        }
+
+        if(cf.security_type_2G.value!='None' && cf.security_type_5G.value!='None')
+        {
+            if(cf.passphrase.value!= cf.passphrase_an.value)
+                if (!confirm("<%56%>"))
+                   return false;
+        }
+    }
+
+    if(needGrayOutWPS)
+        WPS_wizard_grayout();
+    else
+        WPS_wizard_ungrayout();
+
+    enable5G_2Setting();
+    
+    return true;
+}
+
+
+function showWpsAlert()
+{
+    var cf = document.forms[0];
+    if(cf.show_wps_alert.value == "1")
+        alert("<%57%>");
+}
+
+
+function ValidateNumber(e, pnumber)
+{
+
+    e.value=e.value.replace(/[^\d]/g,'');
+}
+
+function getkey(e)
+{
+	var keycode, event;
+
+	if (window.event) 
+	{
+		event = window.event;
+		keycode = window.event.keyCode;
+	}	
+	else if (e)
+	{
+		event = e;
+		keycode = e.which;
+	}	
+	else return true;
+
+
+  if((keycode >= 48) && (keycode <= 57))
+  {
+      return true;
+	        
+  }
+
+	return false;
+}
+
+
+// -->
+</script>
+</head>
+<body  onload="change_size();initScrn();setKeys();disablewifi();showWpsAlert();highLightMenu('setup_header', 'wireless_set');" class="page-body"  onResize="change_size();" >
+<img class="cover-image" src="<%58%>">
+<img class="body-image" src="<%59%>">
+<div id="full-page-container">
+
+<form id="target"  method="POST" action="wireless.cgi">
+<input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
+  <img class="subtop-image" src="<%60%>">
+<div class="subhead2"> <%61%></div>
+<table border="0"    style="height:370px"  class="subhead2-table">
+
+<tr align="left" valign="middle">
+<td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
+&nbsp;&nbsp;&nbsp;<button value="<%62%>" id="applyBtn" onclick="buttonClick(this,'<%62%>');return checkData();" type="SUBMIT" name="Apply" class="button-apply" > <span class="roundleft_apply" ><%63%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%64%>" id="cancelBtn"onclick="buttonClick(this,'<%64%>');"  type="SUBMIT" name="Cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%65%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+</td>
+</tr>
+
+<tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
+    
+    <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+    <tr>
+      <td width="30%" align="left"><a href="javascript:loadhelp('WLG_wireless','region')" tabindex="-1"><b><%66%></b> </a></td>
+      <%67%>
+      <td width="70%"><font size="4"><b><%68%></b></td>
+      <%69%>
+    </tr>
+    <tr>
+      <td nowrap colspan="2"><%70%>:
+      <%71%>
+	<select id="region_select" nowrap="nowrap" name="WRegion" size="1" onchange="chgCh(1)">
+		<option <%72%> value="0">--- <%73%> ---</option>
+		<option <%74%> value="2"><%75%></option>
+		<option <%76%> value="3"><%77%></option>
+		<option <%78%> value="4"><%79%></option>
+		<option <%80%> value="16"><%81%></option>
+		<option <%82%> value="5"><%24%></option>
+		<option <%83%> value="17"><%84%></option>	
+		<option <%85%> value="7"><%25%></option>	
+		<option <%86%> value="8"><%87%></option>
+		<option <%88%> value="18"><%89%></option>		
+		<option <%90%> value="9"><%91%></option>
+		<option <%92%> value="23"><%93%></option>
+		<option <%94%> value="10"><%95%></option>
+		<option <%96%> value="24"><%97%></option>
+  <option <%98%> value="11"><%26%></option>
+	</select></td></tr>
+      <%99%>
+      <%67%>
+        <tr><td colspan="2" >
+	<select id="region_select" name="WRegion" size="1" onchange="chgCh(1)" disabled >
+		<option value="0">--- <%73%> ---</option>
+		<option value="1"><%100%></option> 
+		<option value="2"><%75%></option> 
+		<option value="3"><%77%></option>
+		<option value="10"><%95%></option>   
+		<option value="5"><%24%></option> 
+		<option value="6"><%101%></option> 
+		<option value="9"><%91%></option> 
+		<option value="8"><%87%></option> 
+		<option selected value="7"><%25%></option> 
+		<option value="12"><%102%></option>
+                <option id="ru_jp" value="14"><%103%></option>       
+		<option value="11"><%104%></option>
+	</select></td></tr>
+      <%69%>
+	  <%105%>
+        <tr><td colspan="2" >
+	<select id="region_select" name="WRegion" size="1" onchange="chgCh(1)" disabled >
+		<option value="0">--- <%73%> ---</option>
+		<option value="1"><%100%></option> 
+		<option value="2"><%75%></option> 
+		<option value="3"><%77%></option>
+		<option value="5"><%24%></option> 
+		<option value="6"><%101%></option> 
+		<option value="7"><%25%></option> 
+		<option value="8"><%87%></option> 
+		<option value="9"><%91%></option> 
+		<option value="12"><%102%></option>
+		<option value="10"><%95%></option>
+                <option id="ru_na" value="14"><%103%></option>
+		<option selected value="11"><%104%></option>
+	</select></td></tr>
+      <%106%>
+<tr>
+<td colspan="2" >        
+    <div id="setting_2G" style="display: block;">
+    <table
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+      <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    <tr> 
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','network')" tabindex="-1"><b><%107%></b> </a></td></tr>
+   <!--
+     <%108%>
+    <tr>
+      <td nowrap colspan="2">
+        <input type="checkbox"  <%109%> name="enable_isolation" value="enable_isolation"> <%110%> </td></tr>
+    <%111%>
+   -->
+     <tr>
+      <td nowrap colspan="2">
+      <input type="checkbox"  <%112%> name="ssid_bc" value="ssid_24G_bc"> <%113%> </td></tr>
+    <tr>
+      <td width="50%" align="left"><%114%>:</td>
+      <td width="50%">
+        <input type="text" name="ssid" value="<%115%>" size="20" maxlength="32"></td></tr>
+    <tr>
+      <td nowrap><%116%>:</td>
+      <td nowrap>
+          <select name="w_channel" size=1><option selected><%117%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option></select></td></tr>
+    <tr>
+      <td nowrap><%118%>:</td>
+      <td nowrap><select name="opmode" onchange="chgCh(2);"><%119%></select></td></tr>
+    <tr>
+      
+      <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    <tr>
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%120%></b></a></td></tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type" value="Disable" onClick="securityCheck(0);"><%121%></td></tr>
+    <tr>
+        <td colspan="2">
+            <div id="wep_radio_2G" style="display: block;">
+                <input type="radio" name="security_type" value="WEP" onClick="securityCheck(0);"><%122%>
+            </div>
+        </td>
+    </tr>    
+    <tr>
+        <td colspan="2">
+            <div id="wpa_radio_2G" style="display: none;">
+                <input type="radio" name="security_type" value="WPA-PSK" <%123%> onClick="securityCheck(0);" ><%124%>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type" value="WPA2-PSK" <%123%> onClick="securityCheck(0);"><%125%></td></tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type" value="AUTO-PSK" <%123%> onClick="securityCheck(0);" ><%126%></td></tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type" value="WPA-ENTERPRISE" <%123%> onClick="securityCheck(0);" ><%127%></td></tr>
+    <tr>
+        <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+
+<tr>
+<td colspan="2" >
+    <div id="wep_2G" style="display: none;">
+    <table align="left" border="0" width="100%">
+    <tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%128%></b></a></td></tr>
+    <tr>
+      <td nowrap><%129%>:</td>
+      <td nowrap="nowrap"><select name="authAlgm" size=1><option value="automatic"><%130%></option><option value="sharedkey"><%131%></option></select></td></tr>
+    <tr>
+      <td nowrap><%132%>:</td>
+      <td nowrap="nowrap"><select name="wepenc" size=1 onchange="setKeys();"><option <%133%> value="1"><%134%></option><option <%135%> value="2"><%136%>
+      </option>
+      </select>
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap" colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    <tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wepkey')" tabindex="-1"><b><%137%></b></a></td></tr>
+    <tr>
+      <td nowrap="nowrap" colspan="2">
+          <tr>
+            <td nowrap="nowrap"><%138%> :<input type="radio"  checked name="wep_key_no" value="1"><input type="text" name="KEY1" maxLength=32 size=34 value="<%139%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[0].checked=true;"></td></tr>
+          <tr>
+            <td nowrap="nowrap"><%140%> :<input type="radio" name="wep_key_no" value="2"><input type="text" name="KEY2" maxLength=32 size=34 value="<%141%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[1].checked=true;"></td></tr>
+          <tr>
+            <td nowrap="nowrap"><%142%> :<input type="radio" name="wep_key_no" value="3"><input type="text" name="KEY3" maxLength=32 size=34 value="<%143%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[2].checked=true;"></td></tr>
+          <tr>
+            <td nowrap="nowrap"><%144%> :<input type="radio" name="wep_key_no" value="4"><input type="text" name="KEY4" maxLength=32 size=34 value="<%145%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[3].checked=true;"></td></tr>
+       </td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap" colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+<tr>
+<td colspan="2" >    
+    <div id="wpa_2G" style="display: none;">
+    <table align="left" border="0" width="100%">
+    <tr>
+        <td nowrap="nowrap">
+        <%146%>
+        </td nowrap="nowrap">
+    </tr> 
+    <tr>
+      <td nowrap="nowrap" colspan="2">&nbsp;&nbsp;<%147%>: </td>
+      <td nowrap="nowrap" colspan="2"><input type="text" name="passphrase" autocomplete="off" size=20 maxLength=64 value="<%148%>">&nbsp;&nbsp;<%149%></td></tr>
+    <tr>
+      <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+
+<tr>
+<td colspan="2" >    
+    <div id="wpa_en_2G" style="display: none;">
+    <table align="left" border="0" width="100%">
+    <tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%150%></b></a></td></tr>
+    <tr>
+      <td nowrap><%151%>:</td>
+      <td nowrap="nowrap"><select name="encryptmode" size=1>
+<!--
+        <option value="0"><%152%></option>
+-->        
+        <option value="1"><%153%></option>
+        <option value="2"><%154%></option></select></td></tr>
+    <tr>
+      <td nowrap="nowrap"><%155%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_gk_int" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%156%>">&nbsp;&nbsp;<%157%></td></tr>    
+    <tr>
+    <td nowrap><%158%>:</td>
+    <td nowrap  class="num">
+        <input type="text" name="RADIUSAddr1_wla" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.
+        <input type="text" name="RADIUSAddr2_wla" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
+        <input type="text" name="RADIUSAddr3_wla" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
+        <input type="text" name="RADIUSAddr4_wla" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td></tr>
+    <tr>
+      <td nowrap="nowrap"><%159%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_port" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%160%>"></td></tr>    
+    <tr>
+      <td nowrap="nowrap"><%161%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_ss" autocomplete="off" size=20 maxLength=130 value="<%162%>"></td></tr>    
+    <tr>
+      <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+    <tr> 
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','network')" tabindex="-1"><b><%163%></b> </a></td></tr>
+<tr>
+<td colspan="2" >        
+    <div id="band_steering_checkbox" style="display: block;">
+        <input type="checkbox"  <%164%> name="enable_5g_band_steering" value="enable_band_sterring" onclick="bandSteeringUpdate()"> <a href="javascript:loadhelp('WLG_wireless','auto_balance_5g_radios')" tabindex="-1"><%165%></a> </td></tr>
+    </div>
+</td>
+</tr>
+<tr>
+<td colspan="2" >        
+    <div id="setting_5G" style="display: block;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr><td>&nbsp;</td></tr>
+    <tr><td><b><%166%></b></td></tr>
+    <!--
+    <%108%>
+    <tr>
+      <td nowrap colspan="2">
+        <input type="checkbox"  <%167%> name="enable_isolation_an" value="enable_isolation_an"> <%110%> </td></tr>
+    <%111%>
+   -->
+     <tr>
+      <td nowrap colspan="2">
+      <input type="checkbox"  <%168%> name="ssid_bc_an" value="ssid_5G_bc"> <%113%> </td></tr>
+    <tr>
+      <td width="50%" align="left"><%114%>:</td>
+      <td width="50%">
+        <input type="text" name="ssid_an" value="<%169%>" onKeyUp="ssid5Gchange();ssidUpdate();" size="20" maxlength="32"></td></tr>
+    <tr>
+      <td nowrap><%116%>:</td>
+      <td nowrap>
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel(1);"><option selected><%117%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+
+    <tr>
+      <td nowrap><%118%>:</td>
+      <td nowrap><select name="opmode_an" onchange="chgCh(3);"><%170%></select></td></tr>
+    <tr>
+      
+      <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    <tr>
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%120%></b></a></td></tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type_an" value="Disable" onClick="securityCheck(1);"><%121%></td></tr>
+    <tr>
+        <td colspan="2">
+        <div id="wep_radio_5G" style="display: block;">
+        <input type="radio" name="security_type_an" value="WEP" onClick="securityCheck(1);"><%122%>
+        </div>
+        </td>
+    </tr>    
+    <tr>
+        <td colspan="2">
+        <div id="wpa_radio_5g" style="display: block;">
+        <input type="radio" name="security_type_an" value="WPA-PSK" <%171%> onClick="securityCheck(1);" ><%124%>
+        </div>
+        </td></tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type_an" id="5gAes" value="WPA2-PSK" <%171%> onClick="securityCheck(1);"><%125%></td></tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type_an" id="5gTA" value="AUTO-PSK" <%171%> onClick="securityCheck(1);" ><%126%></td></tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type_an" id="5gEtp" value="WPA-ENTERPRISE" <%171%> onClick="securityCheck(1);" ><%127%></td></tr>
+	<tr>
+        <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+
+<tr>
+<td colspan="2" >
+    <div id="wep_5G" style="display: none;">
+    <table align="left" border="0" width="100%">
+    <tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%128%></b></a></td></tr>
+    <tr>
+      <td nowrap><%129%>:</td>
+      <td nowrap="nowrap"><select name="authAlgm_an" onchange="setAuthAlg();" size=1><option value="automatic"><%130%></option><option value="sharedkey"><%131%></option></select></td></tr>
+    <tr>
+      <td nowrap><%132%>:</td>
+      <td nowrap="nowrap"><select name="wepenc_an" size=1 onchange="setKeys();"><option <%172%> value="1"><%134%></option><option <%173%> value="2"><%136%>
+      </option>
+      </select>
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap" colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    <tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wepkey')" tabindex="-1"><b><%137%></b></a></td></tr>
+    <tr>
+      <td nowrap="nowrap" colspan="2">
+          <tr>
+            <td nowrap="nowrap"><%138%> :<input type="radio" onClick="wepKeySelect(0);" checked name="wep_key_no_an" value="1"><input type="text" name="KEY1_an" maxLength=32 size=34 value="<%174%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[0].checked=true;" onKeyUp="wepKeyChange(0);"></td></tr>
+          <tr>
+            <td nowrap="nowrap"><%140%> :<input type="radio" onClick="wepKeySelect(1);" name="wep_key_no_an" value="2"><input type="text" name="KEY2_an" maxLength=32 size=34 value="<%175%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[1].checked=true;" onKeyUp="wepKeyChange(1);"></td></tr>
+          <tr>
+            <td nowrap="nowrap"><%142%> :<input type="radio" onClick="wepKeySelect(2);" name="wep_key_no_an" value="3"><input type="text" name="KEY3_an" maxLength=32 size=34 value="<%176%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[2].checked=true;" onKeyUp="wepKeyChange(2);"></td></tr>
+          <tr>
+            <td nowrap="nowrap"><%144%> :<input type="radio" onClick="wepKeySelect(3);" name="wep_key_no_an" value="4"><input type="text" name="KEY4_an" maxLength=32 size=34 value="<%177%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[3].checked=true;" onKeyUp="wepKeyChange(3);"></td></tr>
+       </td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap" colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+
+<tr>
+<td colspan="2" >    
+    <div id="wpa_5G" style="display: none;">
+    <table align="left" border="0" width="100%">
+    <tr>
+        <td nowrap="nowrap">
+        <%178%>
+        </td nowrap="nowrap">
+    </tr> 
+    <tr>
+      <td nowrap="nowrap" colspan="2">&nbsp;&nbsp;<%147%>: </td>
+      <td nowrap="nowrap" colspan="2"><input type="text" name="passphrase_an" autocomplete="off" onKeyUp="wpaKeyChange();wpaKeyUpdate();" size=20 maxLength=64 value="<%179%>">&nbsp;&nbsp;<%149%></td></tr>
+    <tr>
+      <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+    
+<tr>
+<td colspan="2" >    
+    <div id="wpa_en_5G" style="display: none;">
+    <table align="left" border="0" width="100%">
+    <tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%150%></b></a></td></tr>
+    <tr>
+      <td nowrap><%151%>:</td>
+      <td nowrap="nowrap"><select name="encryptmode_an" size=1 onChange="enterpriseEncryptModeChange();">
+<!--        
+        <option value="0"><%152%></option>
+-->
+        <option value="1"><%153%></option>
+        <option value="2"><%154%></option></select></td></tr>
+    <tr>
+      <td nowrap="nowrap"><%155%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_gk_int_wlg" onKeyUp="ValidateNumber(this,value);enterprisePollingIntChange();" size=10 maxLength=5 value="<%180%>">&nbsp;&nbsp;<%157%></td></tr>    
+    <tr>
+    <td nowrap><%158%>:</td>
+    <td nowrap  class="num">
+        <input type="text" name="RADIUSAddr1_wlg" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0);radiusIpChange(0);">.
+        <input type="text" name="RADIUSAddr2_wlg" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0);radiusIpChange(1);">.
+        <input type="text" name="RADIUSAddr3_wlg" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0);radiusIpChange(2);">.
+        <input type="text" name="RADIUSAddr4_wlg" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1);radiusIpChange(3);"></td></tr>
+    <tr>
+      <td nowrap="nowrap"><%159%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_port_wlg" onKeyUp="if(ValidateNumber(this,value)) {enterprisePortChange();return true;} else return false;" size=10 maxLength=5 value="<%181%>"></td></tr>    
+    <tr>
+      <td nowrap="nowrap"><%161%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_ss_wlg" autocomplete="off" size=20 maxLength=130 onKeyUp="enterpriseSharedSecurityChange();" value="<%182%>"></td></tr>    
+    <tr>
+      <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+
+
+<tr>
+<td colspan="2" >        
+    <div id="setting_5G_2" style="display: block;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr><td>&nbsp;</td></tr>
+    <tr><td><b><%183%></b></td></tr>
+     <tr>
+      <td nowrap colspan="2">
+      <input type="checkbox"  <%184%> name="ssid_bc_an_2" value="ssid_5G_bc"> <%113%> </td></tr>
+    <tr>
+      <td width="50%" align="left"><%114%>:</td>
+      <td width="50%">
+        <input type="text" name="ssid_an_2" value="<%185%>" size="20" maxlength="32"></td></tr>
+    <tr>
+      <td nowrap><%116%>:</td>
+      <td nowrap>
+          <select name="w_channel_an_2" size=1 onClick="ch_selected = 100;" onChange="checkChannel(2);"><option selected><%117%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+
+    <tr>
+      <td nowrap><%118%>:</td>
+      <td nowrap><select name="opmode_an_2" onchange="chgCh(4);"><%186%></select></td></tr>
+    <tr>
+      
+      <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    <tr>
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%120%></b></a></td></tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type_an_2" value="Disable" onClick="securityCheck(2);"><%121%></td></tr>
+    <tr>
+        <td colspan="2">
+        <div id="wep_radio_5G_2" style="display: block;">
+        <input type="radio" name="security_type_an_2" value="WEP" onClick="securityCheck(2);"><%122%>
+        </div>
+        </td>
+    </tr>    
+    <tr>
+        <td colspan="2">
+        <div id="wpa_radio_5g_2" style="display: block;">
+        <input type="radio" name="security_type_an_2" value="WPA-PSK" <%171%> onClick="securityCheck(2);" ><%124%>
+        </div>
+        </td></tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type_an_2" id="5gAes_2" value="WPA2-PSK" <%171%> onClick="securityCheck(2);"><%125%></td></tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type_an_2" id="5gTA_2" value="AUTO-PSK" <%171%> onClick="securityCheck(2);" ><%126%></td></tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type_an_2" id="5gEtp_2" value="WPA-ENTERPRISE" <%171%> onClick="securityCheck(2);" ><%127%></td></tr>
+	<tr>
+        <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+
+<tr>
+<td colspan="2" >
+    <div id="wep_5G_2" style="display: none;">
+    <table align="left" border="0" width="100%">
+    <tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%128%></b></a></td></tr>
+    <tr>
+      <td nowrap><%129%>:</td>
+      <td nowrap="nowrap"><select name="authAlgm_an_2" size=1><option value="automatic"><%130%></option><option value="sharedkey"><%131%></option></select></td></tr>
+    <tr>
+      <td nowrap><%132%>:</td>
+      <td nowrap="nowrap"><select name="wepenc_an_2" size=1 onchange="setKeys();"><option <%172%> value="1"><%134%></option><option <%187%> value="2"><%136%>
+      </option>
+      </select>
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="nowrap" colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    <tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wepkey')" tabindex="-1"><b><%137%></b></a></td></tr>
+    <tr>
+      <td nowrap="nowrap" colspan="2">
+          <tr>
+            <td nowrap="nowrap"><%138%> :<input type="radio"  checked name="wep_key_no_an_2" value="1"><input type="text" name="KEY1_an_2" maxLength=32 size=34 value="<%174%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an_2[0].checked=true;"></td></tr>
+          <tr>
+            <td nowrap="nowrap"><%140%> :<input type="radio" name="wep_key_no_an_2" value="2"><input type="text" name="KEY2_an_2" maxLength=32 size=34 value="<%175%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an_2[1].checked=true;"></td></tr>
+          <tr>
+            <td nowrap="nowrap"><%142%> :<input type="radio" name="wep_key_no_an_2" value="3"><input type="text" name="KEY3_an_2" maxLength=32 size=34 value="<%176%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an_2[2].checked=true;"></td></tr>
+          <tr>
+            <td nowrap="nowrap"><%144%> :<input type="radio" name="wep_key_no_an_2" value="4"><input type="text" name="KEY4_an_2" maxLength=32 size=34 value="<%177%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an_2_2[3].checked=true;"></td></tr>
+       </td>
+    </tr>
+    <tr>
+        <td nowrap="nowrap" colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+
+<tr>
+<td colspan="2" >    
+    <div id="wpa_5G_2" style="display: none;">
+    <table align="left" border="0" width="100%">
+    <tr>
+        <td nowrap="nowrap">
+        <%188%>
+        </td nowrap="nowrap">
+    </tr> 
+    <tr>
+      <td nowrap="nowrap" colspan="2">&nbsp;&nbsp;<%147%>: </td>
+      <td nowrap="nowrap" colspan="2"><input type="text" name="passphrase_an_2" autocomplete="off" size=20 maxLength=64 value="<%189%>">&nbsp;&nbsp;<%149%></td></tr>
+    <tr>
+      <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+    
+<tr>
+  <td colspan="2" >    
+    <div id="wpa_en_5G_2" style="display: none;">
+    <table align="left" border="0" width="100%">
+    <tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%150%></b></a></td></tr>
+    <tr>
+      <td nowrap><%151%>:</td>
+      <td nowrap="nowrap"><select name="encryptmode_an_2" size=1>
+        <option value="1"><%153%></option>
+        <option value="2"><%154%></option></select></td></tr>
+    <tr>
+      <td nowrap="nowrap"><%155%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_gk_int_wlh" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%180%>">&nbsp;&nbsp;<%157%></td></tr>    
+    <tr>
+    <td nowrap><%158%>:</td>
+    <td nowrap  class="num">
+        <input type="text" name="RADIUSAddr1_wlh" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.
+        <input type="text" name="RADIUSAddr2_wlh" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
+        <input type="text" name="RADIUSAddr3_wlh" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
+        <input type="text" name="RADIUSAddr4_wlh" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td></tr>
+    <tr>
+      <td nowrap="nowrap"><%159%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_port_wlh" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%190%>"></td></tr>    
+    <tr>
+      <td nowrap="nowrap"><%161%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_ss_wlh" size=20 autocomplete="off" maxLength=130 value="<%191%>"></td></tr>    
+    <tr>
+      <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>    
+  </table></div></td></tr>
+<tr valign="middle" align="center"><td class="table-seperate-border" colspan="2" style="padding-left:0px"><div class="help-frame-div" > <iframe id="helpframe"  src="WLG_wireless_h.htm" class="help-iframe" scrolling="no" name="helpframe" frameborder="0" onload="showHelpIframe();"></iframe> </div> </td> </tr>
+</table>
+   <img class="subfooter-image" src="img/subhead2-bottom.gif">
+<div class="subhead2-bottom" >
+    <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%192%> </span>
+    <span class="button-help-arrow">
+      <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%193%> </span>
+      </div>
+
+
+  <input type="hidden" name="sku_name" value="<%22%>">
+  <input type="hidden" name="tempSetting" value="<%194%>">
+  <input type="hidden" name="tempRegion" value="<%195%>">
+  <input type="hidden" name="setRegion" value="<%16%>">
+  <input type="hidden" name="wds_enable" value="<%196%>">    
+  <input type="hidden" name="wds_enable_an" value="<%197%>">    
+  <input type="hidden" name="only_mode" value="0">
+  <input type="hidden" name="band_steering_5g" value=<%198%>>
+  <input type="hidden" name="show_wps_alert" value="<%199%>">
+  <input type="hidden" name="security_type_2G" value="<%200%>">
+  <input type="hidden" name="security_type_5G" value="<%201%>">
+  <input type="hidden" name="security_type_5G_2" value="<%202%>">
+  <input type="hidden" name="init_security_type_2G" value="<%200%>">
+  <input type="hidden" name="init_security_type_5G" value="<%201%>">
+  <input type="hidden" name="init_security_type_5G_2" value="<%202%>">
+  <input type="hidden" name="init_passhprase_5G_2" value="<%203%>">
+  <input type="hidden" name="init_ssid_5G_2" value="<%204%>">
+  <input type="hidden" name="initChannel" value="<%205%>">
+  <input type="hidden" name="initAuthType" value="<%206%>">
+  <input type="hidden" name="initDefaultKey" value="<%207%>">
+  <input type="hidden" name="initChannel_an" value="<%17%>">
+  <input type="hidden" name="initAuthType_an" value="<%208%>">
+  <input type="hidden" name="initDefaultKey_an" value="<%209%>">
+  <input type="hidden" name="initChannel_an_2" value="<%18%>">
+  <input type="hidden" name="initAuthType_an_2" value="<%210%>">
+  <input type="hidden" name="initDefaultKey_an_2" value="<%211%>">
+  <input type="hidden" name="telec_dfs_ch_enable" value="<%212%>">  
+  <input type="hidden" name="ce_dfs_ch_enable" value="<%213%>"> 
+  <input type="hidden" name="fcc_dfs_ch_enable" value="<%214%>"> 
+  <input type="hidden" name="auto_channel_5G" value="<%215%>">  
+  <input type="hidden" name="support_ac_mode" value="<%216%>">
+  <input type="hidden" name="board_id" value="<%217%>">
+  <input type="hidden" name="enable_band_steering" value="<%218%>">
+  <%219%>
+  <input type="hidden" name="fw_sku" value="SKU_WW">
+  <%220%>
+  <%105%>
+  <input type="hidden" name="fw_sku" value="SKU_NA">
+  <%106%>
+  <input type="hidden" name="wla_radius_ipaddr" value="<%221%>">
+  <input type="hidden" name="wlg_radius_ipaddr" value="<%222%>">
+  <input type="hidden" name="wla_ent_secu_type" value="<%223%>">  
+  <input type="hidden" name="wlg_ent_secu_type" value="<%224%>">  
+  <INPUT type="hidden" name="wan_ipaddr" value= "<%225%>">
+  <INPUT type="hidden" name="wan_netmask" value= "<%226%>">  
+  <input type="hidden" name="wlh_radius_ipaddr" value="<%227%>">
+  <input type="hidden" name="wlh_ent_secu_type" value="<%228%>">  
+  <input type="hidden" name="wlh_ent_secu_port" value="<%229%>">  
+  <input type="hidden" name="wlh_ent_secu_interval" value="<%230%>">  
+  <input type="hidden" name="wlh_radius_secret" value="<%231%>">  
+  <input type="hidden" name="wifi_dual_5g_band" value="<%232%>">  
+  <input type="hidden" name="init_ssid_bc_an_2" value="<%184%>">
+  <input type="hidden" name="init_opmode_an_2" value="">
+<a name="helpframe-anchor"></a>
+</form>
+
+</div>
+</body>
+ <head>
+  <%11%>
+</head>
+
+</html>
+

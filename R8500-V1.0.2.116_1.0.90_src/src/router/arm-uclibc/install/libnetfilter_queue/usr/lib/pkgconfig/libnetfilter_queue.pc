@@ -1,0 +1,16 @@
+# libnetfilter_queue pkg-config file
+
+prefix=/data/cs.hsu/R8500/V1.0.2.100_1.0.82/main/components/opensource/netfilter/libnetfilter_queue/install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libnetfilter_queue
+Description: netfilter userspace packet queueing library
+URL: http://netfilter.org/projects/libnetfilter_queue/
+Version: 1.0.2
+Requires: libnfnetlink
+Conflicts:
+Libs: -L${libdir} -lnetfilter_queue
+Libs.private: -L/data/cs.hsu/R8500/V1.0.2.100_1.0.82/main/components/opensource/netfilter/libnfnetlink/install/lib -lnfnetlink
+Cflags: -I${includedir}

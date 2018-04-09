@@ -1,0 +1,236 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<%11%>
+
+<title>NETGEAR Router <%12%></title>
+<link rel="stylesheet" href="<%13%>">
+<link rel="stylesheet" href="css/scrollbar.css">
+<link rel="stylesheet" href="css/button.css">
+
+<script src="jquery.js"></script>
+<script src="script/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="script/jquery.jscrollpane.min.js"></script>
+
+<script src="script/script.js"></script>
+<link rel="stylesheet" href="form.css">
+<STYLE TYPE="text/javascript">
+	classes.num.all.fontFamily = "Courier";
+	classes.num.all.fontSize = "10pt" ;
+</style>
+<%14%>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+    $(document).ready(function()
+    {	
+        $("#target").submit(function() {
+            buttonFilter();
+        });
+
+    });
+function loadSettings()
+{
+	var cf = document.forms[0];
+	if (cf.pTrunking_nv.value == "disable")
+	{
+		cf.ptk_radio[0].checked = true;
+	}
+    /*
+	if (cf.pTrunking_nv.value == "static")
+	{
+		cf.ptk_radio[2].checked = true;
+	}
+    */
+	if (cf.pTrunking_nv.value == "dynamic")
+	{
+		cf.ptk_radio[1].checked = true;
+	}
+}
+function setHelpIframeVisible(){
+        $('.help-frame-div').css("visibility","visible");
+    }
+function showHelpIframe() {
+
+        var imgSrc=document.getElementById('help-button');
+
+        if(imgSrc.src.search("up")>=0)
+        {
+            $(".help-frame-div").show();
+            window.frames["helpframe"].$('#content').jScrollPane({showArrows:true});
+            imgSrc.src="img/helparrowdown-icon.gif";
+        }
+        else
+        {
+            $(".help-frame-div").hide();
+            imgSrc.src="img/helparrowup-icon.gif";
+            setTimeout(setHelpIframeVisible,500);
+        }
+        if((navigator.appName.indexOf("Internet Explorer")==-1) ||
+           (navigator.appVersion.indexOf("MSIE 9")==-1))
+             change_size();
+
+    }
+function loadhelp(fname,anchname)
+    {
+                var pane = window.frames["helpframe"].$('#content');
+                var imgSrc=document.getElementById('help-button');
+                if(imgSrc.src.search("up")<0)
+                {
+
+                        $(".help-frame-div").show();
+                        pane.jScrollPane({showArrows:true});
+
+
+                        if ((loadhelp.arguments.length == 1 ) || (anchname == "" ))
+                        {
+                                window.frames["helpframe"].location.href=fname+"_h.htm";
+                                $(".help-frame-div").show();
+                        }
+                        else
+                        {
+                                window.frames["helpframe"].location.href=fname+"_h.htm#" + anchname;
+                                $(".help-frame-div").show();
+                        }
+
+                        $(".help-frame-div").show();
+                        pane.jScrollPane({showArrows:true});
+
+                }
+    }
+function PTK_Active()
+    {
+        var cf = document.forms[0];
+        var nv = cf.pTrunking_nv.value;
+	    var on_off =  "<%3515%>"; 
+
+        if(nv == "dynamic")
+        {
+            if(on_off == "<%3516%>")
+      		{
+		        document.getElementById("active_ptk").style.display="block";
+			    document.getElementById("inactive_ptk").style.display="none";
+		        document.getElementById("active_ptk_status").style.display="block";
+			    document.getElementById("inactive_ptk_status").style.display="none";
+
+    		}
+	    	else 
+		    {
+    		    document.getElementById("active_ptk").style.display="none";
+	    		document.getElementById("inactive_ptk").style.display="block";
+		        document.getElementById("active_ptk_status").style.display="none";
+			    document.getElementById("inactive_ptk_status").style.display="block";
+
+    		}
+        }
+        else if (nv == "static")
+        {
+		    document.getElementById("active_ptk").style.display="block";
+			document.getElementById("inactive_ptk").style.display="none";
+            document.getElementById("active_ptk_status").style.display="block";
+		    document.getElementById("inactive_ptk_status").style.display="none";
+        }
+        else    /*disable*/
+        {
+		    document.getElementById("active_ptk").style.display="none";
+			document.getElementById("inactive_ptk").style.display="block";
+	        document.getElementById("active_ptk_status").style.display="none";
+		    document.getElementById("inactive_ptk_status").style.display="block";
+
+        }
+	}
+
+function checkData()
+{
+    var cf = document.forms[0];
+    var lacp_vlan_conflict = "<%3517%>";
+    if( cf.ptk_radio[1].checked && lacp_vlan_conflict == "1")
+    {
+        alert("<%3518%>");
+        return false;
+    }
+    /*
+    var enable_vlan = "<%3519%>";
+    
+    if(enable_vlan == "enable")
+    {
+        alert("<%3520%>");
+        return false;
+    }
+    */
+    
+    return true;
+}
+
+//-->
+</script>
+</head>
+<body  onload="change_size();loadSettings();PTK_Active();" class="page-body"  onResize="change_size();" >
+    <img class="cover-image" src="<%58%>">
+    <img class="body-image" src="<%59%>">
+    <div id="full-page-container">
+        <form id="target"  name="formname" method="POST" action="portTrunking.cgi">
+            <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
+            <img class="subtop-image" src="<%60%>">
+            <div class="subhead2"><%545%></div>
+            <table border="0"    style="height:370px"  class="subhead2-table">
+                <tr align="left" valign="middle">
+                    <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
+                        &nbsp;&nbsp;&nbsp;<button value="<%62%>"  onclick="buttonClick(this,'<%62%>');return checkData();" type="submit" name="Apply" class="button-apply" > <span class="roundleft_apply" ><%63%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
+                        &nbsp;&nbsp;&nbsp;<button value="<%64%>" onclick="buttonClick(this,'<%64%>');reset();loadSettings();" type="button" name="Cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%65%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                    </td>
+                </tr>
+                <tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto">
+				<table style="border-collapse:collapse;width:97%">
+                <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+                    <tr>
+                        <td colspan="2"><input type="radio"  name="ptk_radio" value="disable"><%3521%></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input type="radio"  name="ptk_radio" value="dynamic"><%3522%></td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td colspan="2"><input type="radio"  name="ptk_radio" value="static"><%3523%></td>
+                    </tr>
+                    -->
+					
+			    <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+				<tr id="active_ptk_status" style="display:none">
+                <td width="60%" colspan="2" ><%3524%>:&nbsp;<b><font color="#04B404"><%3515%></font></b></td>
+                </tr>
+				<tr id="inactive_ptk_status" style="display:none">
+                <td width="60%" colspan="2" ><%3524%>:&nbsp;<b><%3515%></b></td>
+                </tr>
+                <tr>
+                <td width="60%" height="12" colspan="2" ></td>
+                </tr>
+				
+				<tr id="active_ptk" style="display:none" align="center">
+                <td><img src="img/PortTrunking_On_R7800_black.png" alt="PortTrunking" width="623" height="125" border="0" ></td>
+                </tr>
+				
+				<tr id="inactive_ptk" style="display:none" align="center">
+                <td><img src="img/PortTrunking_Off_R7800_black.png" alt="PortTrunking" width="623" height="125" border="0" ></td>
+                </tr>
+
+                <%3525%>
+				
+                </table></div></td></tr>
+                <tr valign="middle" align="center"><td class="table-seperate-border" colspan="2" style="padding-left:0px"><div class="help-frame-div" > <iframe id="helpframe"  src="PortTrunking_setting_h.htm" class="help-iframe" scrolling="no" name="helpframe" frameborder="0" onload="showHelpIframe();"></iframe> </div> </td> </tr>		
+			</table>
+			<img class="subfooter-image" src="img/subhead2-bottom.gif">
+            <div class="subhead2-bottom" >
+              <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
+              <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%192%> </span>
+              <span class="button-help-arrow">
+              <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
+              <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%193%> </span>
+              </div>			
+				
+				
+        <INPUT name=pTrunking_nv type=hidden value="<%3526%>">
+        </form>
+    </div>
+</body>
+</html>
+

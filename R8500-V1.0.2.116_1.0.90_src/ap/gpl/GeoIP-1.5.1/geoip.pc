@@ -1,0 +1,11 @@
+prefix=/home/bob/SVN/R7800/GPL/R8500-V1.0.0.12_1.0.7_src/src/router/arm-uclibc/target/usr
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+datadir=${prefix}/share
+
+Name: geoip
+Description: A non-DNS IP-to-country resolver library.
+Version: 1.5.1
+Libs: -L${libdir} -lGeoIP
+Cflags: -I${includedir}/
+databasedir=${datadir}/GeoIP

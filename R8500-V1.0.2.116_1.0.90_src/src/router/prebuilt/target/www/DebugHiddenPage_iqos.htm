@@ -1,0 +1,147 @@
+<html>
+<head>
+<%11%>
+
+
+<script language="javascript" type="text/javascript">
+<!--
+function init()
+{
+    var cf = document.forms[0];
+    var brcm_speedtest="<%2555%>";
+    if ((cf.debug_in_process.value != ""))
+    {
+        cf.action_Start_Debug.disabled=true;
+    }
+    
+    if((cf.usb_storage_detected.value == "1"))
+	{
+		cf.action_Save_To_USB.disabled=false;
+		cf.action_Save_To_USB.checked=true;
+	}else
+	{
+		cf.action_Save_To_USB.disabled=true;
+		cf.action_Save_To_USB.checked=false;
+	}
+    show_textarea(1);
+	
+	if(brcm_speedtest=="1")
+		cf.speedtest_method.selectedIndex=0;
+	else
+		cf.speedtest_method.selectedIndex=1;
+		
+    
+    return true;
+}
+
+function clickSaveButton()
+{
+    var cf = document.forms[0];
+    cf.action_Start_Debug.disabled=false;
+}
+function show_textarea(option)
+{
+	var cf = document.forms[0];
+	switch(option){
+		case 1:
+			cf.get_all_user.style.display="block";
+			cf.get_dev_info.style.display="none";
+			cf.get_app_info.style.display="none";
+			cf.get_qos_info.style.display="none";
+			break;
+		case 2:
+			cf.get_all_user.style.display="none";
+			cf.get_dev_info.style.display="block";
+			cf.get_app_info.style.display="none";
+			cf.get_qos_info.style.display="none";
+			break;
+		case 3:
+			cf.get_all_user.style.display="none";
+			cf.get_dev_info.style.display="none";
+			cf.get_app_info.style.display="block";
+			cf.get_qos_info.style.display="none";
+			break;
+		case 4:
+			cf.get_all_user.style.display="none";
+			cf.get_dev_info.style.display="none";
+			cf.get_app_info.style.display="none";
+			cf.get_qos_info.style.display="block";
+			break;
+	}
+}
+
+-->
+</script>
+
+<title>NETGEAR Router <%12%></title>
+</head>
+<body onload="init();">
+
+<form id="target"  action=debug.cgi method="POST">
+<table border="0" width=100%>
+<input type="hidden" name="usb_storage_detected" value="<%2556%>">
+<tr>
+    <td colspan=2>
+    <div style="background-image:url('liteblue.gif');width:100%" style="display:block">&nbsp</div>
+    </td>
+</tr
+<tr>
+    <td>
+	<BR>
+	&nbsp;&nbsp;&nbsp;Speedtest method :
+	<select id="speedtest_method" name="speedtest_method" size="1" onchange=submit();>
+		<option value="0">BOOKLA</option>
+		<option value="1">OOKLA</option> 
+	</select>
+	<BR>
+	<BR>
+	&nbsp;&nbsp;&nbsp;<input type="checkbox" name="action_Save_To_USB" value="1" disabled>Save capture file to USB storage&nbsp;&nbsp;
+	<br>&nbsp;&nbsp;&nbsp;
+	<script>
+	if(document.forms[0].usb_storage_detected.value == "1"){
+		document.write("(USB storage detected)");
+	}else{
+		document.write("(No USB storage detected)");
+	}
+	</script>
+	<br><br>
+	&nbsp;&nbsp;&nbsp;<button type=submit value="Start_Debug" name=action_Start_Debug >Start WAN/LAN packet capture</button> &nbsp;&nbsp;
+	<br><br>
+	<!--&nbsp;&nbsp;&nbsp;<button type=submit value="Start_Wifi_Pkt_Dump" name=action_Dump_Wifi_Packet >Wifi packets dump</button> &nbsp;&nbsp;
+	<br><br>-->
+    &nbsp;&nbsp;&nbsp;<button type="BUTTON" value="DebugLog" name="DebugLog" onclick="window.location.href = 'Debug_log.zip';clickSaveButton();">Stop and Save Debug Log</button> 
+    </td>
+    <td width=60%>
+    <p><b>iQoS device detection debug information</b></p>
+	<button type="BUTTON" onclick="show_textarea(1)">get_all_user</button><button type="BUTTON" onclick="show_textarea(2)">get_dev_info</button><button type="BUTTON" onclick="show_textarea(3)">get_app_info</button><button type="BUTTON" onclick="show_textarea(4)">get_qos_info</button>
+    <textarea id="get_all_user" cols="80" rows="30" style="display:none">
+	<%2557%>
+    </textarea>
+    <textarea id="get_dev_info" cols="80" rows="30" style="display:none">
+	<%2558%>
+    </textarea>
+    <textarea id="get_app_info" cols="80" rows="30" style="display:none">
+	<%2559%>
+    </textarea>
+    <textarea id="get_qos_info" cols="80" rows="30" style="display:none">
+	<%2560%>
+    </textarea>
+    </td>
+</tr>
+<tr>
+    <td colspan=2>
+    <div style="background-image:url('liteblue.gif');width:100%" style="display:block">&nbsp</div>
+    </td>
+</tr>    
+<tr>
+    <td colspan=2> 
+ </td>   
+</tr>
+    <input type="hidden" name="action_Capture_Packets" value="Capture_packet">
+    <input type="hidden" name="action_trend_iqos" value="trend_iqos_debug_mode">
+    <input type="hidden" name="debug_in_process" value="<%2561%>">
+	<input type="hidden" name="debug_hidden_page" value="iqos">
+</table>
+</form>
+</body>
+</html>

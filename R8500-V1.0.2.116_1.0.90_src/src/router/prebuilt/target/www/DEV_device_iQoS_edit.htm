@@ -1,0 +1,235 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<%11%>
+<title>NETGEAR Router <%12%></title> 
+<link rel="stylesheet" href="<%13%>">
+<link rel="stylesheet" href="css/scrollbar.css">
+<link rel="stylesheet" href="css/button.css">
+
+<script src="jquery.js"></script>
+<script src="script/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="script/jquery.jscrollpane.min.js"></script>
+<script type="text/javascript" src="script/sorttable.js"></script>
+<script src="script/script.js"></script>
+<link rel="stylesheet" href="form.css">
+<STYLE TYPE="text/javascript">
+	classes.num.all.fontFamily = "Courier";
+	classes.num.all.fontSize = "10pt" ;
+</style>
+<%14%>
+<script language="javascript" type="text/javascript">
+<!--
+  
+    $(document).ready(function()
+    {	
+//        $('.scroll-pane').jScrollPane('scrollbarMargin:5px');
+        $("#target").submit(function() {
+            buttonFilter();
+        });
+
+    });
+
+
+    function setHelpIframeVisible(){
+        $('.help-frame-div').css("visibility","visible");
+    }
+
+
+    function showHelpIframe() {
+
+        var imgSrc=document.getElementById('help-button');
+
+        if(imgSrc.src.search("up")>=0)
+        {
+            $(".help-frame-div").show();
+            window.frames["helpframe"].$('#content').jScrollPane({showArrows:true});
+            imgSrc.src="img/helparrowdown-icon.gif";
+        }
+        else
+        {
+            $(".help-frame-div").hide();
+            imgSrc.src="img/helparrowup-icon.gif";
+            setTimeout(setHelpIframeVisible,500);
+        }
+        if((navigator.appName.indexOf("Internet Explorer")==-1) ||
+           (navigator.appVersion.indexOf("MSIE 9")==-1))
+             change_size();
+
+    }
+
+    function moveToHTMLend()
+    {
+        window.location.href='#helpframe-anchor';
+        setHelpIframeVisible();
+    }
+
+
+    function loadhelp(fname,anchname)
+    {
+                var pane = window.frames["helpframe"].$('#content');
+                var imgSrc=document.getElementById('help-button');
+                if(imgSrc.src.search("up")<0)
+                {
+
+                        $(".help-frame-div").show();
+                        pane.jScrollPane({showArrows:true});
+
+
+                        if ((loadhelp.arguments.length == 1 ) || (anchname == "" ))
+                        {
+                                window.frames["helpframe"].location.href=fname+"_h.htm";
+                                $(".help-frame-div").show();
+                        }
+                        else
+                        {
+                                window.frames["helpframe"].location.href=fname+"_h.htm#" + anchname;
+                                $(".help-frame-div").show();
+                        }
+
+                        $(".help-frame-div").show();
+                        pane.jScrollPane({showArrows:true});
+
+                }
+    }
+    var type_name=["Amazon Kindle","Android Device","Android Phone","Android Tablet","Apple Airport Express","Blu-ray player","Bridge","Cable STB","Camera","Router","DVR","Gaming Console","iMac","iPad","iPad mini","iPhone 5/5s/5c","iPhone","iPod Touch","Linux PC","Mac mini","Mac Pro","Mac Book","Media Device","Network Device","Other STB","Powerline","Printer","Repeater","Satellite STB","scanner","Sling box","Smart phone","Storage NAS","Switch","TV","Tablet","Unix PC","Windows PC","Surface","Wifi Extender","Apple TV","AV Receiver","Chromecast","Google Nexus 5","Google Nexus 7","Google Nexus 10","Other","WN1000RP","WN2500RP","VoIP","iPhone 6/6 Plus"];
+    var type_icon=["icon/Device_0.png","icon/Amazon_Kindle_1.png","icon/Android_Device_2.png","icon/Android_Phone_3.png","icon/Android_Tablet_4.png","icon/Apple_Airport_Express_5.png","icon/Blu-ray_player_6.png","icon/Bridge_7.png","icon/Cable_STB_8.png","icon/Camera_9.png","icon/Router_10.png","icon/DVR_11.png","icon/Gaming_Console_12.png","icon/iMac_13.png","icon/iPad_14.png","icon/iPad_mini_15.png","icon/iPhone_5_16.png","icon/iPhone_17.png","icon/iPod_Touch_18.png","icon/Linux_PC_19.png","icon/Mac_mini_20.png","icon/Mac_Pro_21.png","icon/Mac_Book_22.png","icon/Media_Device_23.png","icon/Network_Device_24.png","icon/Other_STB_25.png","icon/Powerline_26.png","icon/Printer_27.png","icon/Repeater_28.png","icon/Satellite_STB_29.png","icon/scanner_30.png","icon/Sling_box_31.png","icon/Smart_phone_32.png","icon/Storage_NAS_33.png","icon/Switch_34.png","icon/TV_35.png","icon/Tablet_36.png","icon/Unix_PC_37.png","icon/Windows_PC_38.png","icon/Surface_39.png","icon/Wifi_Extender_40.png","icon/Apple_TV_41.png","icon/AV_Receiver_42.png","icon/Chromcast_43.png","icon/Google_Nexus_5_44.png","icon/Google_Nexus_7_45.png","icon/Google_Nexus_10_46.png","icon/Other_47.png","icon/WN1000RP_48.png","icon/WN2500RP_49.png","icon/VoIP_50.png","icon/iPhone6_51.png"];
+function loadSettings()
+{
+    var prio=<%2537%>;
+    var devType=<%2538%>;
+    var enable_iqos = document.getElementsByName("enable_iqos");
+    
+    if(devType==0)
+        devType=47;
+   
+    $("#priority").attr("value",prio);
+    
+    if(enable_iqos[0].value == "0"){
+        var iqos_item = document.getElementsByName("iqos_item");
+        for(i=0 ; i<$('tr[name=iqos_item]').length ; i++)
+        {
+            $('tr[name=iqos_item]')[i].style.display = "none";
+        }
+    }
+    var list=document.forms[0].devType;
+    var index=list.options.length;
+	for(index=0;index<type_name.length;index++){
+    list.options[index]=new Option(type_name[index],index+1); //Amazon Kindle devtype=1
+    }
+    $("#devType").attr("value",devType);
+    document.forms[0].devIcon.src =type_icon[devType];
+	
+	return 0;
+}
+
+function checkData()
+{
+    var cf = document.forms[0];
+    var msg = "";
+//	if( cf.devName.value.length < 1 )
+//		msg += "Input name can't be empty\n";
+    if (cf.devName.value.match( /[^\x20-\x7E]/ ))
+        msg+="<%245%>\n";
+
+    if (msg.length > 1) {
+        alert(msg);
+        return false;
+    }
+    return true;			
+}
+function set_mac()
+{
+    var mac = getElementsByName_iefix("span", "mac"); 
+    var cf = document.forms[0];
+    cf.select_mac.value=mac[0].innerHTML;
+}  
+
+function changeIcon(list) 
+{     
+    var index=list.selectedIndex+1;
+    document.forms[0].devIcon.src =type_icon[index];
+} 
+//-->
+</script> 
+</head>
+<body  onload="change_size();loadSettings();" class="page-body"  onResize="change_size();" >
+<img class="cover-image" src="<%58%>">
+<img class="body-image" src="<%59%>">
+<div id="full-page-container">
+
+<form id="target"  name="frmLan" method="POST" action="devices.cgi">
+<input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
+	<img class="subtop-image" src="<%60%>">
+<div class="subhead2"> <%2539%></div>
+<table border="0"    style="height:370px"  class="subhead2-table">
+
+<tr align="left" valign="middle">
+<td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
+&nbsp;&nbsp;&nbsp;<button value="Apply" onclick="set_mac();buttonClick(this,'Apply');return checkData()"  type="SUBMIT" name="Apply" class="button-rule" ><span class="roundleft_button"><span>&nbsp;&nbsp; <%2540%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="Back" onclick="window.location.href='DEV_redirect.htm';"  type="BUTTON" name="Back" class="button-rule" ><span class="roundleft_button"><span>&nbsp;&nbsp; <%2530%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+</td>
+</tr>
+
+<tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
+		
+
+<tr><td colspan="3" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+
+<tr height="30px">
+<td nowrap><%2541%></td>
+<td nowrap colspan="2"><%2542%></td>
+</tr>
+<tr height="30px">
+<td nowrap><%868%></td>
+<td nowrap colspan="2"><span id="mac" name="mac"><%2543%></span></td>
+</tr>
+<tr height="30px">
+<td nowrap><%869%></td>
+<td nowrap colspan="2"><input type="text" size="24" maxlength="24" name="devName" value="<%2544%>"></td>
+</tr>
+<tr name="iqos_item" height="30px">
+<td nowrap><%2050%></td>
+<td nowrap colspan="2"><select name="priority" id="priority"><option value=3><%2545%></option><option value=2><%2546%></option><option value=1><%2547%></option><option value=0><%2548%></option></select></td>
+</tr>
+<tr name="iqos_item">
+<td nowrap style="vertical-align:top;" ><%2549%></td>
+<td nowrap width=15% style="vertical-align:top;">
+<select name="devType" id="devType" onchange="changeIcon(this);">
+</select>
+</td>
+<td nowrap align="left">
+<img src="" id="devIcon" name="devIcon">
+</td>
+</tr>
+<tr><td colspan="3" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+
+
+
+<tr><td>&nbsp;</td></tr>
+<tr><td colspan="3"><div height="12" id="black_list_line2" style="background-image:url('liteblue.gif');width:100%;display:none">&nbsp;</div></td></tr>
+</table></div></td></tr>
+<tr valign="middle" align="center"><td class="table-seperate-border" colspan="3" style="padding-left:0px"><div class="help-frame-div" > <iframe id="helpframe"  src="DEV_device_iQoS_edit_h.htm" class="help-iframe" scrolling="no" name="helpframe" frameborder="0" onload="showHelpIframe();"></iframe> </div> </td> </tr>
+</table>
+<a name="helpframe-anchor"></a>
+   <img class="subfooter-image" src="img/subhead2-bottom.gif">
+<div class="subhead2-bottom" >
+    <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%192%> </span>
+    <span class="button-help-arrow">
+      <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%193%> </span>
+      </div>
+
+
+    <input name="enable_iqos" type="hidden" value= "<%2138%>">
+    <input name="select_dev" type="hidden" value= "<%2536%>">
+    <input name="page_submit" type="hidden" value= "edit_dev">
+    <input name="select_mac" type="hidden" value= "">
+</form>
+
+</div>
+</body>
+ 
+</html>
+

@@ -1,0 +1,15 @@
+# libmnl pkg-config file
+
+prefix=/data/cs.hsu/R8500/V1.0.2.100_1.0.82/main/components/opensource/netfilter/libmnl/install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libmnl
+Description: Minimalistic Netlink communication library
+URL: http://netfilter.org/projects/libmnl/
+Version: 1.0.3
+Requires:
+Conflicts:
+Libs: -L${libdir} -lmnl
+Cflags: -I${includedir}

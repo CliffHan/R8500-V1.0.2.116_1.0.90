@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<%11%>
+<title>NETGEAR Router <%12%></title> 
+<link rel="stylesheet" href="<%13%>">
+<link rel="stylesheet" href="css/scrollbar.css">
+<link rel="stylesheet" href="css/button.css">
+
+<script src="jquery.js"></script>
+<script src="script/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="script/jquery.jscrollpane.min.js"></script>
+
+<script src="script/script.js"></script>
+
+<STYLE TYPE="text/javascript">
+	classes.num.all.fontFamily = "Courier";
+	classes.num.all.fontSize = "10pt" ;
+</style>
+
+<!--<link rel="stylesheet" href="demos.css">-->
+<link rel="stylesheet" href="jquery-ui.css">
+<link rel="stylesheet" href="jquery.ui.all.css">
+
+<script src="jquery.ui.core.js"></script>
+<script src="jquery.ui.widget.js"></script>
+<script src="jquery.ui.tabs.js"></script>
+<link rel="stylesheet" type="text/css" href="css/tabs.css">
+
+<%14%>
+<script language="javascript" type="text/javascript">
+	var iframeStr;
+<!--
+	var viewportheight;
+	if (typeof window.innerWidth != 'undefined')
+		viewportheight = window.innerHeight;
+
+	else if (typeof document.documentElement != 'undefined'
+			&& typeof document.documentElement.clientWidth !=
+			'undefined' && document.documentElement.clientWidth != 0)
+       viewportheight = document.documentElement.clientHeight;
+	else
+       viewportheight = document.getElementsByTagName('body')[0].clientHeight;
+
+	viewportheight = viewportheight-65;
+//-->
+function loadSetting()
+{
+	iframeStr = "<iframe src='USB_adv_tab.htm' width='100%' height='"+viewportheight+"' frameborder='0'>";
+    $("#Ready_Share").html(iframeStr); 
+}    
+$(function() {
+    <%3493%>
+    /**Tabs*/
+    $( "#readyShare_tabs" ).tabs();  
+	
+    $("#ReadyShare").click(function(){ 
+		iframeStr = "<iframe src='USB_adv_tab.htm' width='100%' height='"+viewportheight+"' frameborder='0'>"; 
+        $("#Ready_Share").html(iframeStr); 
+    })
+	
+	$("#MediaServer").click(function(){
+		iframeStr = "<iframe src='UPNP_media.htm' width='100%' height='"+viewportheight+"' frameborder='0'>"; 
+		$("#Media_Server").html(iframeStr); 
+    }) 
+    
+<%3494%>	
+	$("#ReadyCloud").click(function(){
+		iframeStr = "<iframe src='USB_basic_remote.htm' width='100%' height='"+viewportheight+"' frameborder='0'>"; 
+        $("#Ready_Cloud").html(iframeStr); 
+    }) 
+<%3495%>
+	
+});//$(function() {
+</script>	
+
+</head>
+<body onload="loadSetting()">
+<div id="readyShare_tabs" class='scroll-pane'>
+    <ul>
+        <li><a id="ReadyShare" href="#Ready_Share"><%476%></a></li>
+        <li><a id="MediaServer" href="#Media_Server"><%1308%></a></li>
+        <%3496%>	
+		    <li><a id="ReadyCloud" href="#Ready_Cloud"><%2462%></a></li>
+        <%3497%>
+    </ul>
+    <div id="Ready_Share"></div>
+    <div id="Media_Server"></div>
+<%487%>
+	<div id="Ready_Cloud"></div>
+<%488%>
+</div>
+</body>
+</html>
+
