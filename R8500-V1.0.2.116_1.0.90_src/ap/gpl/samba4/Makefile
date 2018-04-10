@@ -49,6 +49,7 @@ configure:
 	[ -f $(SAMBA_SRC)/bin/config.log ] || \
 	(cd $(SAMBA_SRC); \
 		export CFLAGS=-"D_LARGE_FILES -D_FILE_OFFSET_BITS=64" ; \
+		export CPPFLAGS="-I$(SAMBA_TOP)/$(PYTHON_SRC) $(SAMBA_TOP)/$(PYTHON_SRC)/Include" ; \
 	 	export LDFLAGS=-L$(SAMBA_TOP)/$(SAMBA_SRC)/python_arm/lib ; \
 		export python_LDFLAGS=-L$(SAMBA_TOP)/$(SAMBA_SRC)/python_arm/lib ; \
 		export python_LIBDIR=$(SAMBA_TOP)/$(SAMBA_SRC)/python_arm/lib ; \
