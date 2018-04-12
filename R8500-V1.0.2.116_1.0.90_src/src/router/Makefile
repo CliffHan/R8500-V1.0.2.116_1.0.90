@@ -1058,7 +1058,7 @@ ifeq ($(BUILD_MFG), 1)
 else
 	cp $(SRCBASE)/router/compressed/vmlinuz $(PLATFORMDIR)/
 	$(SRCBASE)/../tools/trx -o $(PLATFORMDIR)/linux.trx $(PLATFORMDIR)/vmlinuz $(PLATFORMDIR)/$(ROOT_IMG)
-	    addpattern -i $(PLATFORMDIR)/linux.trx -o $(PLATFORMDIR)/linux_lsys.bin ; \
+	    $(SRCBASE)/../tools/addpattern -i $(PLATFORMDIR)/linux.trx -o $(PLATFORMDIR)/linux_lsys.bin ; \
 	if grep -q "CONFIG_SQUASHFS=y" $(LINUXDIR)/.config ; then \
 	cp $(SRCBASE)/router/compressed/vmlinuz-gzip $(PLATFORMDIR)/ ; \
 	$(SRCBASE)/../tools/trx -o $(PLATFORMDIR)/linux-gzip.trx $(PLATFORMDIR)/vmlinuz-gzip $(PLATFORMDIR)/$(ROOT_IMG) ; \
