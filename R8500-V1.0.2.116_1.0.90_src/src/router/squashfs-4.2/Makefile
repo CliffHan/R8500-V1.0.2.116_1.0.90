@@ -103,6 +103,8 @@ AS = as
 LD = ld
 NM = nm
 STRIP = strip
+EXTRA_CFLAGS = -m32
+EXTRA_LDFLAGS = -m32
 
 INCLUDEDIR = -I.
 INSTALL_DIR = /usr/local/bin
