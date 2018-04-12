@@ -101,7 +101,7 @@ OBJS := $(wildcard $(foreach file,libgcc-need.a interp.o,$(OPTINFO)/$(file))) $(
 endif # CONFIG_IPV6 = y
 # Foxconn, added by Michael, for DLNA to use uClibc
 $(LIBC):
-	cp $(TOOLCHAIN)/lib/libuClibc-0.9.32.1.so	libc.so.0
+	cp $(TOOLCHAIN)/lib/libuClibc-0.9.33.2.so	libc.so.0
 # Foxconn, ended by Michael, for DLNA to use uClibc.
 
 # Foconn, marked by Michael, for DLNA to use uClibc.
@@ -178,8 +178,8 @@ install: $(wildcard $(foreach lib,$(LINKER) $(lib-y),$(LIBDIR)/$(lib) $(LIBDIR)/
 	install -d $(TARGETDIR)/lib
 	install $^ $(TARGETDIR)/lib/
 	$(STRIP) $(TARGETDIR)/lib/*.so.*
-	install $(TOOLCHAIN)/usr/lib/libcrypto.so.1.0.0	$(TARGETDIR)/lib/libcrypto.so
-	install $(TOOLCHAIN)/usr/lib/libssl.so.1.0.0	$(TARGETDIR)/lib/libssl.so
+	install $(TOOLCHAIN)/arm-brcm-linux-uclibcgnueabi/sysroot/usr/lib/libcrypto.so.1.0.0	$(TARGETDIR)/lib/libcrypto.so
+	install $(TOOLCHAIN)/arm-brcm-linux-uclibcgnueabi/sysroot/usr/lib/libssl.so.1.0.0	$(TARGETDIR)/lib/libssl.so
 	
 ifneq ($(ARCH), arm)
 ifeq ($(CONFIG_LIBOPT),y)

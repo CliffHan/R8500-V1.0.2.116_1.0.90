@@ -952,7 +952,7 @@ ifeq ($(PROFILE),R7800)
 	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
 	install utelnetd/ookla $(TARGETDIR)/bin
 	install fbwifi/fbwifi $(TARGETDIR)/bin
-	install -D $(TOOLCHAIN)/usr/lib/libstdc++.so.6 $(TARGETDIR)/usr/lib/libstdc++.so.6
+	install -D $(TOOLCHAIN)/arm-brcm-linux-uclibcgnueabi/sysroot/usr/lib/libstdc++.so.6 $(TARGETDIR)/usr/lib/libstdc++.so.6
 	$(STRIP) $(TARGETDIR)/usr/lib/libstdc++.so.6.0.14
 
 	install prebuilt/AccessCntl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
@@ -1421,7 +1421,7 @@ libstdcpp:
 	@:
 
 libstdcpp-install:
-	install -D $(TOOLCHAIN)/usr/lib/libstdc++.so.6.0.14 $(INSTALLDIR)/libstdcpp/usr/lib/libstdc++.so.6.0.14
+	install -D $(TOOLCHAIN)/arm-brcm-linux-uclibcgnueabi/sysroot/usr/lib/libstdc++.so.6.0.14 $(INSTALLDIR)/libstdcpp/usr/lib/libstdc++.so.6.0.14
 	+ldconfig -N -n -r $(INSTALLDIR)/libstdcpp usr/lib
 	+$(STRIP) $(INSTALLDIR)/libstdcpp/usr/lib/libstdc++.so.6.0.14
 
