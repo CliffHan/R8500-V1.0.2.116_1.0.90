@@ -1057,11 +1057,11 @@ ifeq ($(BUILD_MFG), 1)
 	$(MAKE) -C $(SRCBASE)/router/compressed ARCH=$(ARCH)
 else
 	cp $(SRCBASE)/router/compressed/vmlinuz $(PLATFORMDIR)/
-	trx -o $(PLATFORMDIR)/linux.trx $(PLATFORMDIR)/vmlinuz $(PLATFORMDIR)/$(ROOT_IMG)
+	$(SRCBASE)/../tools/trx -o $(PLATFORMDIR)/linux.trx $(PLATFORMDIR)/vmlinuz $(PLATFORMDIR)/$(ROOT_IMG)
 	    addpattern -i $(PLATFORMDIR)/linux.trx -o $(PLATFORMDIR)/linux_lsys.bin ; \
 	if grep -q "CONFIG_SQUASHFS=y" $(LINUXDIR)/.config ; then \
 	cp $(SRCBASE)/router/compressed/vmlinuz-gzip $(PLATFORMDIR)/ ; \
-	trx -o $(PLATFORMDIR)/linux-gzip.trx $(PLATFORMDIR)/vmlinuz-gzip $(PLATFORMDIR)/$(ROOT_IMG) ; \
+	$(SRCBASE)/../tools/trx -o $(PLATFORMDIR)/linux-gzip.trx $(PLATFORMDIR)/vmlinuz-gzip $(PLATFORMDIR)/$(ROOT_IMG) ; \
 	fi
 endif
 	# Pad self-booting Linux to a 64 KB boundary
@@ -1073,10 +1073,10 @@ else # LINUXDIR
 		$(MAKE) -C $(LINUXDIR) $(SUBMAKE_SETTINGS) zImage ; \
 	else \
 		cp $(LINUXDIR)/arch/mips/brcm-boards/bcm947xx/compressed/vmlinuz $(PLATFORMDIR)/ ; \
-		trx -o $(PLATFORMDIR)/linux.trx $(PLATFORMDIR)/vmlinuz $(PLATFORMDIR)/$(ROOT_IMG) ; \
+		$(SRCBASE)/../tools/trx -o $(PLATFORMDIR)/linux.trx $(PLATFORMDIR)/vmlinuz $(PLATFORMDIR)/$(ROOT_IMG) ; \
 		if grep -q "CONFIG_SQUASHFS=y" $(LINUXDIR)/.config ; then \
 			cp $(LINUXDIR)/arch/mips/brcm-boards/bcm947xx/compressed/vmlinuz-lzma $(PLATFORMDIR)/ ; \
-			trx -o $(PLATFORMDIR)/linux-lzma.trx $(PLATFORMDIR)/vmlinuz-lzma $(PLATFORMDIR)/$(ROOT_IMG) ; \
+			$(SRCBASE)/../tools/trx -o $(PLATFORMDIR)/linux-lzma.trx $(PLATFORMDIR)/vmlinuz-lzma $(PLATFORMDIR)/$(ROOT_IMG) ; \
 		fi \
 	fi
 	# Pad self-booting Linux to a 64 KB boundary
